@@ -1,8 +1,14 @@
 <script setup lang="ts">
-import { ChevronLeft, ChevronRight } from '@lucide/vue'
-import { computed, ref } from 'vue'
-import { Button } from '@/components/ui/button'
+import { computed, ref, watch } from 'vue'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationNext,
+  PaginationPrevious,
+} from '@/components/ui/pagination'
 import { Skeleton } from '@/components/ui/skeleton'
 import {
   Tooltip,
@@ -32,11 +38,11 @@ const paginatedCases = computed(() => {
   return props.cases.slice(start, start + ITEMS_PER_PAGE)
 })
 
-function goToPage(page: number) {
-  if (page < 1 || page > totalPages.value)
-    return
-  currentPage.value = page
-}
+watch(() => props.cases.length, (length) => {
+  if (currentPage.value > totalPages.value) {
+    currentPage.value = Math.max(1, Math.ceil(length / ITEMS_PER_PAGE))
+  }
+})
 </script>
 
 <template>
@@ -117,34 +123,32 @@ function goToPage(page: number) {
         </ul>
 
         <!-- Pagination -->
-        <div
+        <Pagination
           v-if="totalPages > 1"
-          class="flex items-center justify-between border-t px-4 py-2"
+          v-slot="{ page }"
+          v-model:page="currentPage"
+          :items-per-page="ITEMS_PER_PAGE"
+          :total="cases.length"
+          class="justify-between border-t px-4 py-2"
         >
           <span class="text-xs text-muted-foreground">
-            Page {{ currentPage }} of {{ totalPages }}
+            Page {{ page }} of {{ totalPages }}
           </span>
-          <div class="flex gap-1">
-            <Button
-              variant="outline"
-              size="icon"
-              class="h-7 w-7"
-              :disabled="currentPage === 1"
-              @click.prevent="goToPage(currentPage - 1)"
-            >
-              <ChevronLeft class="h-4 w-4" />
-            </Button>
-            <Button
-              variant="outline"
-              size="icon"
-              class="h-7 w-7"
-              :disabled="currentPage === totalPages"
-              @click.prevent="goToPage(currentPage + 1)"
-            >
-              <ChevronRight class="h-4 w-4" />
-            </Button>
-          </div>
-        </div>
+          <PaginationContent v-slot="{ items }">
+            <PaginationPrevious />
+            <template v-for="(item, index) in items" :key="index">
+              <PaginationItem
+                v-if="item.type === 'page'"
+                :value="item.value"
+                :is-active="item.value === page"
+              >
+                {{ item.value }}
+              </PaginationItem>
+              <PaginationEllipsis v-else :index="index" />
+            </template>
+            <PaginationNext />
+          </PaginationContent>
+        </Pagination>
       </div>
 
       <div v-else-if="isLoading" class="space-y-3">
