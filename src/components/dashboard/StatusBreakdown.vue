@@ -39,7 +39,7 @@ function statusColor(status: string): string {
 </script>
 
 <template>
-  <Card>
+  <Card class="bg-muted/40">
     <CardHeader>
       <CardTitle class="text-base font-semibold">Case Status Breakdown</CardTitle>
     </CardHeader>

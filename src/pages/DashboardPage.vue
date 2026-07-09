@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { onMounted } from 'vue'
-import { Activity, Banknote, CheckCircle, Wallet } from '@lucide/vue'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import RecentCases from '@/components/dashboard/RecentCases.vue'
@@ -74,26 +73,21 @@ onMounted(() => {
           label="Active Cases"
           :value="data.stats.totalActiveCases"
           helper-text="Currently assigned"
-          :icon="Activity"
-          tone="primary"
         />
         <StatsCard
           label="Closed This Year"
           :value="data.stats.closedThisYear"
           helper-text="Completed cases"
-          :icon="CheckCircle"
         />
         <StatsCard
           label="Pending IOU"
           :value="data.stats.pendingIOU"
           helper-text="Awaiting approval"
-          :icon="Wallet"
         />
         <StatsCard
           label="Est. Fees"
           :value="formatCurrencyIdr(data.stats.totalEstimatedFees)"
           helper-text="Total estimated fees"
-          :icon="Banknote"
         />
       </div>
 

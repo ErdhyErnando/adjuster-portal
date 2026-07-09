@@ -1,42 +1,26 @@
 <script setup lang="ts">
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import type { Component } from 'vue'
 
 interface Props {
   label: string
   value: string | number
   helperText?: string
-  icon?: Component
-  tone?: 'default' | 'primary'
 }
 
 withDefaults(defineProps<Props>(), {
   helperText: undefined,
-  icon: undefined,
-  tone: 'default',
 })
 </script>
 
 <template>
-  <Card>
+  <Card class="bg-muted/40">
     <CardHeader class="pb-2">
-      <CardTitle
-        :class="[
-          'flex items-center gap-2 text-xs font-medium uppercase tracking-wide',
-          tone === 'primary' ? 'text-primary' : 'text-muted-foreground',
-        ]"
-      >
-        <component
-          v-if="icon"
-          :is="icon"
-          class="h-4 w-4"
-          aria-hidden="true"
-        />
+      <CardTitle class="text-xs font-medium uppercase tracking-wide text-muted-foreground">
         {{ label }}
       </CardTitle>
     </CardHeader>
     <CardContent>
-      <div class="text-2xl font-semibold tracking-tight">
+      <div class="text-2xl font-semibold tracking-tight tabular-nums sm:text-3xl">
         {{ value }}
       </div>
       <p v-if="helperText" class="mt-1 text-xs text-muted-foreground">
