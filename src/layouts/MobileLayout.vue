@@ -13,8 +13,8 @@ const tabs = [
 </script>
 
 <template>
-  <div class="flex min-h-svh flex-col bg-background">
-    <main class="flex-1 overflow-y-auto p-4 pb-24 md:hidden">
+  <div class="flex min-h-svh flex-col bg-background md:hidden">
+    <main class="flex-1 overflow-y-auto p-4 pb-24">
       <slot />
     </main>
 
