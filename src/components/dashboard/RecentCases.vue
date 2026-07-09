@@ -4,6 +4,12 @@ import { computed, ref } from 'vue'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip'
 import { formatCompanyAcronym, formatCurrencyIdr } from '@/lib/formatters'
 import type { CaseListItem } from '@/types/case'
 
@@ -83,7 +89,18 @@ function goToPage(page: number) {
                 {{ item.insured }}
               </div>
               <div class="hidden text-sm text-muted-foreground sm:col-span-2 sm:block">
-                {{ formatCompanyAcronym(item.insurer) }}
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger as-child>
+                      <span class="cursor-help underline decoration-dotted">
+                        {{ formatCompanyAcronym(item.insurer) }}
+                      </span>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>{{ item.insurer }}</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               </div>
               <div class="hidden text-sm font-medium text-foreground sm:col-span-1 sm:block">
                 {{ item.statusInitial }}
