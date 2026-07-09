@@ -32,10 +32,10 @@ withDefaults(defineProps<Props>(), {
             <div class="flex items-start justify-between gap-2">
               <div class="min-w-0 flex-1">
                 <p class="truncate text-sm font-medium text-foreground group-hover:text-primary">
-                  {{ item.caseRef }}
+                  {{ item.atlasRef }}
                 </p>
                 <p class="mt-0.5 text-xs text-muted-foreground">
-                  {{ item.insurer }} • {{ item.currentStatus }}
+                  {{ item.insured }} • {{ item.division }}
                 </p>
               </div>
               <span class="shrink-0 text-xs text-muted-foreground">

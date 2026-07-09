@@ -72,7 +72,7 @@ function statusColor(status: string): string {
               class="inline-block h-2.5 w-2.5 rounded-full"
               :class="statusColor(item.status)"
             />
-            <span class="text-sm font-medium">{{ item.status }}</span>
+            <span class="text-sm font-medium">{{ item.label }}</span>
           </div>
           <span class="text-sm text-muted-foreground">{{ item.count }}</span>
         </li>
