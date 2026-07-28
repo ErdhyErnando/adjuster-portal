@@ -136,7 +136,7 @@ watch(searchQuery, () => {
           <div class="sm:col-span-2">Insurer</div>
           <div class="sm:col-span-1">Broker</div>
           <div class="sm:col-span-1">Status</div>
-          <div class="text-right sm:col-span-1">Aging</div>
+          <div class="sm:col-span-1">Aging</div>
         </div>
 
         <!-- Table rows -->
@@ -217,7 +217,7 @@ watch(searchQuery, () => {
               </div>
               <!-- Aging (color-coded) -->
               <div
-                class="hidden text-right text-sm font-medium sm:col-span-1 sm:block"
+                class="hidden text-sm font-medium sm:col-span-1 sm:block"
                 :class="agingClass(item.agingDays)"
               >
                 {{ item.agingDays }}d

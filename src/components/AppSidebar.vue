@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Briefcase, FileText, LayoutDashboard, Settings, Wallet } from '@lucide/vue'
+import { Briefcase, FileText, LayoutDashboard, Settings, StickyNotePlus, Wallet } from '@lucide/vue'
 import { useRoute } from 'vue-router'
 import {
   Sidebar,
@@ -85,10 +85,10 @@ function isActive(path: string): boolean {
         <SidebarMenuItem>
           <SidebarMenuButton
             as-child
-            class="bg-primary text-white hover:bg-[#D4533A] hover:text-white"
+            class="border border-sidebar-border bg-sidebar-accent text-white hover:bg-[#D4533A] hover:text-white"
           >
             <RouterLink to="/iou/new">
-              <span>+</span>
+              <StickyNotePlus />
               <span>New IOU Request</span>
             </RouterLink>
           </SidebarMenuButton>

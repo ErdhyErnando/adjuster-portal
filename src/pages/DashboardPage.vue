@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { onMounted } from 'vue'
+import { StickyNotePlus } from '@lucide/vue'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import RecentCases from '@/components/dashboard/RecentCases.vue'
@@ -34,8 +35,11 @@ onMounted(() => {
         </div>
       </div>
 
-      <Button as-child class="w-full sm:w-auto">
-        <RouterLink to="/iou/new">New IOU Request</RouterLink>
+      <Button as-child variant="outline" class="w-full bg-muted/40 sm:w-auto">
+        <RouterLink to="/iou/new">
+          <StickyNotePlus />
+          New IOU Request
+        </RouterLink>
       </Button>
     </div>
 
