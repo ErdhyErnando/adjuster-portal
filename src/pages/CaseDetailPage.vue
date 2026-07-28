@@ -13,7 +13,7 @@ const caseId = route.params.id
         <RouterLink to="/cases">Back</RouterLink>
       </Button>
     </div>
-    <h1 class="text-2xl font-semibold tracking-tight">
+    <h1 class="text-2xl font-semibold tracking-tight md:hidden">
       Case Detail: {{ caseId }}
     </h1>
 

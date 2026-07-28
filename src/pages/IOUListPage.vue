@@ -4,8 +4,8 @@ import { Button } from '@/components/ui/button'
 
 <template>
   <div class="space-y-6">
-    <div class="flex items-center justify-between">
-      <h1 class="text-2xl font-semibold tracking-tight">Cash Advance (IOU)</h1>
+    <div class="flex items-center justify-between md:justify-end">
+      <h1 class="text-2xl font-semibold tracking-tight md:hidden">Cash Advance (IOU)</h1>
       <Button as-child>
         <RouterLink to="/iou/new">New Request</RouterLink>
       </Button>
