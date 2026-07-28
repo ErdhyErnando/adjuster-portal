@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button'
         <RouterLink to="/iou">Back</RouterLink>
       </Button>
     </div>
-    <h1 class="text-2xl font-semibold tracking-tight">New IOU Request</h1>
+    <h1 class="text-2xl font-semibold tracking-tight md:hidden">New IOU Request</h1>
 
     <div
       class="rounded-lg border border-dashed border-border bg-muted/30 p-8 text-center"
