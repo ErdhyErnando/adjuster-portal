@@ -14,6 +14,13 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip'
+import { formatCompanyAcronym } from '@/lib/formatters'
 import type { CaseListItem } from '@/types/case'
 import { agingClass, COMPACT_PAGE_SIZE, DEFAULT_PAGE_SIZE, progressBarClass, statusBadgeClass } from './caseListUtils'
 
@@ -75,8 +82,8 @@ watch(
               v-for="cell in row.getVisibleCells()"
               :key="cell.id"
               :class="[
-                cell.column.id === 'broker' ? 'max-w-[17rem] whitespace-normal' : '',
-                cell.column.id === 'insurer' || cell.column.id === 'insured' ? 'max-w-[15rem] truncate' : '',
+                cell.column.id === 'broker' ? 'max-w-24' : '',
+                cell.column.id === 'insurer' || cell.column.id === 'insured' ? 'max-w-60 truncate' : '',
                 cell.column.id === 'progressActions' ? 'text-right' : '',
               ]"
             >
@@ -87,6 +94,19 @@ watch(
               >
                 {{ cell.row.original.atlasRef }}
               </RouterLink>
+
+              <TooltipProvider v-else-if="cell.column.id === 'broker'">
+                <Tooltip>
+                  <TooltipTrigger as-child>
+                    <span class="cursor-help underline decoration-dotted">
+                      {{ formatCompanyAcronym(cell.row.original.broker) }}
+                    </span>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>{{ cell.row.original.broker }}</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
 
               <Badge
                 v-else-if="cell.column.id === 'status'"
