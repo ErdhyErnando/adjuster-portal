@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { Search } from '@lucide/vue'
+import { computed, ref } from 'vue'
+import { ChevronDown, Search, SlidersHorizontal } from '@lucide/vue'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -19,7 +20,7 @@ interface Props {
   hasActiveFilters: boolean
 }
 
-defineProps<Props>()
+const props = defineProps<Props>()
 
 const emit = defineEmits<{
   'update:search': [value: string]
@@ -30,7 +31,9 @@ const emit = defineEmits<{
   clear: []
 }>()
 
-const filterSelectClass = 'case-filter-select h-9 w-full rounded-md border border-input bg-background px-3 pr-9 text-sm text-foreground shadow-xs outline-none transition-colors focus:border-ring focus:ring-2 focus:ring-ring/20 disabled:cursor-not-allowed disabled:opacity-50'
+const isOpen = ref(false)
+const filterButtonLabel = computed(() => props.hasActiveFilters ? 'Filters active' : 'Filters')
+const filterSelectClass = 'case-mobile-filter-select h-10 w-full rounded-md border border-input bg-background px-3 pr-9 text-sm text-foreground shadow-xs outline-none transition-colors focus:border-ring focus:ring-2 focus:ring-ring/20 disabled:cursor-not-allowed disabled:opacity-50'
 
 function selectValue(event: Event): string {
   return (event.target as HTMLSelectElement).value
@@ -38,9 +41,21 @@ function selectValue(event: Event): string {
 </script>
 
 <template>
-  <Card class="hidden bg-muted/30 md:block">
-    <CardContent class="p-3">
-      <div class="grid gap-2 lg:grid-cols-[minmax(16rem,1.35fr)_repeat(4,minmax(9rem,1fr))_auto] lg:items-center">
+  <div class="fixed bottom-[calc(5rem+env(safe-area-inset-bottom))] left-4 right-4 z-40 md:hidden">
+    <Card id="mobile-case-filters" v-if="isOpen" class="mb-2 border bg-background/95 shadow-xl backdrop-blur">
+      <CardContent class="space-y-2 p-3">
+        <div class="flex items-center justify-between gap-2">
+          <span class="text-sm font-medium">Filters</span>
+          <Button
+            variant="ghost"
+            size="sm"
+            :disabled="!hasActiveFilters"
+            @click="emit('clear')"
+          >
+            Clear
+          </Button>
+        </div>
+
         <div class="relative">
           <Search
             class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
@@ -48,7 +63,7 @@ function selectValue(event: Event): string {
           <Input
             :model-value="search"
             placeholder="Search..."
-            class="h-9 pl-9"
+            class="h-10 pl-9"
             @update:model-value="emit('update:search', String($event))"
           />
         </div>
@@ -101,22 +116,31 @@ function selectValue(event: Event): string {
           <option value="last-90">Last 90 days</option>
           <option value="older-90">Older than 90 days</option>
         </select>
+      </CardContent>
+    </Card>
 
-        <Button
-          variant="outline"
-          class="w-full lg:w-auto"
-          :disabled="!hasActiveFilters"
-          @click="emit('clear')"
-        >
-          Clear
-        </Button>
-      </div>
-    </CardContent>
-  </Card>
+    <div class="flex justify-end">
+      <Button
+        class="h-11 rounded-full px-4 shadow-lg"
+        :variant="hasActiveFilters ? 'default' : 'outline'"
+        aria-controls="mobile-case-filters"
+        :aria-expanded="isOpen"
+        @click="isOpen = !isOpen"
+      >
+        <SlidersHorizontal />
+        {{ filterButtonLabel }}
+        <span v-if="hasActiveFilters" class="ml-0.5 h-2 w-2 rounded-full bg-current" />
+        <ChevronDown
+          class="transition-transform"
+          :class="isOpen ? 'rotate-180' : ''"
+        />
+      </Button>
+    </div>
+  </div>
 </template>
 
 <style scoped>
-.case-filter-select {
+.case-mobile-filter-select {
   appearance: none;
   background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%236b7280' stroke-width='1.5'%3e%3cpath d='m6 8 4 4 4-4' stroke-linecap='round' stroke-linejoin='round'/%3e%3c/svg%3e");
   background-position: right 0.75rem center;

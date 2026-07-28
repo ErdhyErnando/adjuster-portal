@@ -5,6 +5,7 @@ import type { PaginationState } from '@tanstack/vue-table'
 import { refDebounced } from '@vueuse/core'
 import CaseFilterBar from '@/components/cases/CaseFilterBar.vue'
 import CaseListHeader from '@/components/cases/CaseListHeader.vue'
+import CaseMobileFilterAccordion from '@/components/cases/CaseMobileFilterAccordion.vue'
 import CasePaginationControls from '@/components/cases/CasePaginationControls.vue'
 import CaseResultsSummary from '@/components/cases/CaseResultsSummary.vue'
 import CasesDesktopTable from '@/components/cases/CasesDesktopTable.vue'
@@ -142,10 +143,23 @@ watch(
 </script>
 
 <template>
-  <div class="space-y-5">
+  <div class="space-y-5 pb-24 md:pb-0">
     <CaseListHeader />
 
     <CaseFilterBar
+      v-model:search="searchQuery"
+      v-model:line-of-business="lineOfBusinessFilter"
+      v-model:division="divisionFilter"
+      v-model:status="statusFilter"
+      v-model:date="dateFilter"
+      :line-of-business-options="lineOfBusinessOptions"
+      :division-options="divisionOptions"
+      :status-options="statusOptions"
+      :has-active-filters="hasActiveFilters"
+      @clear="clearFilters"
+    />
+
+    <CaseMobileFilterAccordion
       v-model:search="searchQuery"
       v-model:line-of-business="lineOfBusinessFilter"
       v-model:division="divisionFilter"
