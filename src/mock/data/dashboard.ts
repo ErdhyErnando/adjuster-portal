@@ -21,7 +21,6 @@ export const dashboardMockData: AdjusterDashboard = {
     { status: 'IR', label: 'Interim Report', count: 6 },
     { status: 'PR', label: 'Preliminary Report', count: 4 },
     { status: 'IA', label: 'Initial Assessment', count: 3 },
-    { status: 'AA', label: 'Adjuster Appointment', count: 2 },
     { status: 'CLOSED', label: 'Closed', count: 1 },
   ],
   lineOfBusinessSummary: [

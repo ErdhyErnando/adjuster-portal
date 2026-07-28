@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
+import { Search } from '@lucide/vue'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
 import {
   Pagination,
   PaginationContent,
@@ -16,7 +18,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
-import { formatCompanyAcronym, formatCurrencyIdr } from '@/lib/formatters'
+import { formatCompanyAcronym, formatDateId } from '@/lib/formatters'
 import type { CaseListItem } from '@/types/case'
 
 interface Props {
@@ -30,29 +32,71 @@ const props = withDefaults(defineProps<Props>(), {
 
 const ITEMS_PER_PAGE = 5
 const currentPage = ref(1)
+const searchQuery = ref('')
 
-const totalPages = computed(() => Math.ceil(props.cases.length / ITEMS_PER_PAGE))
+const filteredCases = computed(() => {
+  const query = searchQuery.value.trim().toLowerCase()
+  if (!query) return props.cases
+
+  return props.cases.filter(
+    (c) =>
+      c.atlasRef.toLowerCase().includes(query) ||
+      c.insured.toLowerCase().includes(query) ||
+      c.insurer.toLowerCase().includes(query) ||
+      c.broker.toLowerCase().includes(query) ||
+      c.statusInitial.toLowerCase().includes(query) ||
+      c.currentStatus.toLowerCase().includes(query) ||
+      c.division.toLowerCase().includes(query),
+  )
+})
+
+const totalPages = computed(() => Math.ceil(filteredCases.value.length / ITEMS_PER_PAGE))
 
 const paginatedCases = computed(() => {
   const start = (currentPage.value - 1) * ITEMS_PER_PAGE
-  return props.cases.slice(start, start + ITEMS_PER_PAGE)
+  return filteredCases.value.slice(start, start + ITEMS_PER_PAGE)
 })
 
-watch(() => props.cases.length, (length) => {
-  if (currentPage.value > totalPages.value) {
-    currentPage.value = Math.max(1, Math.ceil(length / ITEMS_PER_PAGE))
-  }
+watch(
+  () => filteredCases.value.length,
+  (length) => {
+    const maxPage = Math.max(1, Math.ceil(length / ITEMS_PER_PAGE))
+    if (currentPage.value > maxPage) {
+      currentPage.value = maxPage
+    }
+  },
+)
+
+// Reset page when search query changes
+watch(searchQuery, () => {
+  currentPage.value = 1
 })
+
+function statusTooltip(statusInitial: string, statusDate: string): string {
+  return `${statusInitial} issued on ${formatDateId(statusDate)}`
+}
 </script>
 
 <template>
   <Card class="bg-muted/40">
     <CardHeader>
-      <CardTitle class="text-base font-semibold">Recent Cases</CardTitle>
+      <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <CardTitle class="text-base font-semibold">Recent Cases</CardTitle>
+        <div class="relative w-full sm:w-56">
+          <Search
+            class="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
+          />
+          <Input
+            v-model="searchQuery"
+            placeholder="Search cases..."
+            class="h-8 pl-8 text-sm"
+          />
+        </div>
+      </div>
     </CardHeader>
     <CardContent>
       <div
-        v-if="!isLoading && cases.length > 0"
+        v-if="!isLoading && filteredCases.length > 0"
         class="overflow-hidden rounded-lg border bg-card"
       >
         <!-- Table header -->
@@ -60,11 +104,11 @@ watch(() => props.cases.length, (length) => {
           class="hidden border-b bg-muted/50 px-4 py-2 text-xs font-medium text-muted-foreground sm:grid sm:grid-cols-12"
         >
           <div class="sm:col-span-3">Atlas Ref</div>
-          <div class="sm:col-span-3">Insured</div>
+          <div class="sm:col-span-2">Insured</div>
           <div class="sm:col-span-2">Insurer</div>
+          <div class="sm:col-span-2">Broker</div>
           <div class="sm:col-span-1">Status</div>
-          <div class="text-right sm:col-span-1">Aging</div>
-          <div class="text-right sm:col-span-2">Fee Est.</div>
+          <div class="text-right sm:col-span-2">Aging</div>
         </div>
 
         <!-- Table rows -->
@@ -88,12 +132,25 @@ watch(() => props.cases.length, (length) => {
                   {{ item.atlasRef }}
                 </p>
                 <p class="text-xs text-muted-foreground sm:hidden">
-                  {{ item.insured }} • {{ item.division }}
+                  {{ formatCompanyAcronym(item.insured) }} • {{ item.division }}
                 </p>
               </div>
-              <div class="hidden truncate text-sm text-muted-foreground sm:col-span-3 sm:block">
-                {{ item.insured }}
+              <!-- Insured (acronym + tooltip) -->
+              <div class="hidden text-sm text-muted-foreground sm:col-span-2 sm:block">
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger as-child>
+                      <span class="cursor-help underline decoration-dotted">
+                        {{ formatCompanyAcronym(item.insured) }}
+                      </span>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>{{ item.insured }}</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               </div>
+              <!-- Insurer (acronym + tooltip) -->
               <div class="hidden text-sm text-muted-foreground sm:col-span-2 sm:block">
                 <TooltipProvider>
                   <Tooltip>
@@ -108,15 +165,44 @@ watch(() => props.cases.length, (length) => {
                   </Tooltip>
                 </TooltipProvider>
               </div>
-              <div class="hidden text-sm font-medium text-foreground sm:col-span-1 sm:block">
-                {{ item.statusInitial }}
+              <!-- Broker (acronym + tooltip) -->
+              <div class="hidden text-sm text-muted-foreground sm:col-span-2 sm:block">
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger as-child>
+                      <span class="cursor-help underline decoration-dotted">
+                        {{ formatCompanyAcronym(item.broker) }}
+                      </span>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>{{ item.broker }}</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               </div>
-              <div class="hidden text-right text-sm text-muted-foreground sm:col-span-1 sm:block">
+              <!-- Current Status (short initial + tooltip) -->
+              <div class="hidden text-sm font-medium text-foreground sm:col-span-1 sm:block">
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger as-child>
+                      <span class="cursor-help underline decoration-dotted">
+                        {{ item.statusInitial }}
+                      </span>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>{{ statusTooltip(item.statusInitial, item.statusDate) }}</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
+              <!-- Aging -->
+              <div class="hidden text-right text-sm text-muted-foreground sm:col-span-2 sm:block">
                 {{ item.agingDays }}d
               </div>
-              <div class="mt-1.5 flex items-center justify-between text-xs text-muted-foreground sm:col-span-2 sm:mt-0 sm:justify-end sm:text-sm">
-                <span class="sm:hidden">{{ item.statusInitial }} • {{ item.agingDays }}d</span>
-                <span>{{ formatCurrencyIdr(item.feeEstimate) }}</span>
+              <!-- Mobile row -->
+              <div class="mt-1.5 flex items-center justify-between text-xs text-muted-foreground sm:hidden">
+                <span>{{ item.statusInitial }} • {{ item.agingDays }}d</span>
+                <span>{{ formatCompanyAcronym(item.broker) }}</span>
               </div>
             </RouterLink>
           </li>
@@ -128,7 +214,7 @@ watch(() => props.cases.length, (length) => {
           v-slot="{ page }"
           v-model:page="currentPage"
           :items-per-page="ITEMS_PER_PAGE"
-          :total="cases.length"
+          :total="filteredCases.length"
           class="justify-between border-t px-4 py-2"
         >
           <span class="text-xs text-muted-foreground">
@@ -156,7 +242,7 @@ watch(() => props.cases.length, (length) => {
       </div>
 
       <div v-else class="rounded-lg border bg-card py-8 text-center text-sm text-muted-foreground">
-        No recent cases.
+        {{ searchQuery ? 'No cases match your search.' : 'No recent cases.' }}
       </div>
     </CardContent>
   </Card>

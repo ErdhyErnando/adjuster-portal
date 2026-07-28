@@ -5,7 +5,6 @@ import { Skeleton } from '@/components/ui/skeleton'
 import RecentCases from '@/components/dashboard/RecentCases.vue'
 import StatsCard from '@/components/dashboard/StatsCard.vue'
 import StatusBreakdown from '@/components/dashboard/StatusBreakdown.vue'
-import { formatCurrencyIdr } from '@/lib/formatters'
 import { useDashboard } from '@/composables/useDashboard'
 
 const { data, isLoading, error, loadDashboard } = useDashboard()
@@ -42,8 +41,8 @@ onMounted(() => {
 
     <!-- Loading state -->
     <div v-if="isLoading" class="space-y-6">
-      <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <Skeleton v-for="i in 4" :key="i" class="h-28 w-full" />
+      <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <Skeleton v-for="i in 3" :key="i" class="h-28 w-full" />
       </div>
       <Skeleton class="h-48 w-full" />
       <Skeleton class="h-80 w-full" />
@@ -68,7 +67,7 @@ onMounted(() => {
     <!-- Dashboard content -->
     <template v-else-if="data">
       <!-- Stats cards -->
-      <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <StatsCard
           label="Active Cases"
           :value="data.stats.totalActiveCases"
@@ -83,11 +82,6 @@ onMounted(() => {
           label="Pending IOU"
           :value="data.stats.pendingIOU"
           helper-text="Awaiting approval"
-        />
-        <StatsCard
-          label="Est. Fees"
-          :value="formatCurrencyIdr(data.stats.totalEstimatedFees)"
-          helper-text="Total estimated fees"
         />
       </div>
 

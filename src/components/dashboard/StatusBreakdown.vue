@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { computed } from 'vue'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import type { StatusBreakdownItem } from '@/types/dashboard'
 
@@ -7,16 +6,13 @@ interface Props {
   items: StatusBreakdownItem[]
 }
 
-const props = defineProps<Props>()
-
-const total = computed(() => props.items.reduce((sum, item) => sum + item.count, 0))
+defineProps<Props>()
 
 function statusColor(status: string): string {
   switch (status.toUpperCase()) {
     case 'DOA':
       return 'bg-blue-500'
     case 'IA':
-    case 'AA':
       return 'bg-indigo-500'
     case 'PR':
       return 'bg-violet-500'
@@ -44,22 +40,6 @@ function statusColor(status: string): string {
       <CardTitle class="text-base font-semibold">Case Status Breakdown</CardTitle>
     </CardHeader>
     <CardContent class="space-y-4">
-      <!-- Mini stacked bar -->
-      <div
-        v-if="total > 0"
-        class="flex h-3 w-full overflow-hidden rounded-full"
-        role="img"
-        aria-label="Status breakdown distribution"
-      >
-        <div
-          v-for="item in items.filter((i) => i.count > 0)"
-          :key="item.status"
-          :class="['h-full min-w-1', statusColor(item.status)]"
-          :style="{ width: `${(item.count / total) * 100}%` }"
-          :title="`${item.status}: ${item.count}`"
-        />
-      </div>
-
       <!-- Legend rows -->
       <ul class="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5">
         <li
@@ -77,10 +57,6 @@ function statusColor(status: string): string {
           <span class="text-sm text-muted-foreground">{{ item.count }}</span>
         </li>
       </ul>
-
-      <p v-if="total === 0" class="text-center text-sm text-muted-foreground">
-        No cases to display.
-      </p>
     </CardContent>
   </Card>
 </template>
