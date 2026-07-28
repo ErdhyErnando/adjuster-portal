@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
 import { Search } from '@lucide/vue'
+import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import {
@@ -20,6 +21,37 @@ import {
 } from '@/components/ui/tooltip'
 import { formatCompanyAcronym, formatDateId } from '@/lib/formatters'
 import type { CaseListItem } from '@/types/case'
+
+function statusBadgeClass(status: string): string {
+  switch (status.toUpperCase()) {
+    case 'FR':
+      return 'bg-emerald-500/15 text-emerald-600'
+    case 'DFR':
+      return 'bg-orange-500/15 text-orange-600'
+    case 'SUR':
+      return 'bg-amber-500/15 text-amber-600'
+    case 'IR':
+      return 'bg-cyan-500/15 text-cyan-600'
+    case 'PR':
+      return 'bg-violet-500/15 text-violet-600'
+    case 'IA':
+      return 'bg-indigo-500/15 text-indigo-600'
+    case 'CLOSED':
+      return 'bg-slate-400/15 text-slate-500'
+    default:
+      return 'bg-gray-400/15 text-gray-500'
+  }
+}
+
+function agingClass(days: number): string {
+  if (days < 7) return 'text-emerald-600'
+  if (days <= 14) return 'text-amber-600'
+  return 'text-red-600'
+}
+
+function statusTooltip(statusInitial: string, statusDate: string): string {
+  return `${statusInitial} issued on ${formatDateId(statusDate)}`
+}
 
 interface Props {
   cases: CaseListItem[]
@@ -71,10 +103,6 @@ watch(
 watch(searchQuery, () => {
   currentPage.value = 1
 })
-
-function statusTooltip(statusInitial: string, statusDate: string): string {
-  return `${statusInitial} issued on ${formatDateId(statusDate)}`
-}
 </script>
 
 <template>
@@ -104,11 +132,11 @@ function statusTooltip(statusInitial: string, statusDate: string): string {
           class="hidden border-b bg-muted/50 px-4 py-2 text-xs font-medium text-muted-foreground sm:grid sm:grid-cols-12"
         >
           <div class="sm:col-span-3">Atlas Ref</div>
-          <div class="sm:col-span-2">Insured</div>
+          <div class="sm:col-span-4">Insured</div>
           <div class="sm:col-span-2">Insurer</div>
-          <div class="sm:col-span-2">Broker</div>
+          <div class="sm:col-span-1">Broker</div>
           <div class="sm:col-span-1">Status</div>
-          <div class="text-right sm:col-span-2">Aging</div>
+          <div class="text-right sm:col-span-1">Aging</div>
         </div>
 
         <!-- Table rows -->
@@ -132,23 +160,12 @@ function statusTooltip(statusInitial: string, statusDate: string): string {
                   {{ item.atlasRef }}
                 </p>
                 <p class="text-xs text-muted-foreground sm:hidden">
-                  {{ formatCompanyAcronym(item.insured) }} • {{ item.division }}
+                  {{ item.insured }} • {{ item.division }}
                 </p>
               </div>
-              <!-- Insured (acronym + tooltip) -->
-              <div class="hidden text-sm text-muted-foreground sm:col-span-2 sm:block">
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger as-child>
-                      <span class="cursor-help underline decoration-dotted">
-                        {{ formatCompanyAcronym(item.insured) }}
-                      </span>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>{{ item.insured }}</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
+              <!-- Insured (full name) -->
+              <div class="hidden truncate text-sm text-muted-foreground sm:col-span-4 sm:block">
+                {{ item.insured }}
               </div>
               <!-- Insurer (acronym + tooltip) -->
               <div class="hidden text-sm text-muted-foreground sm:col-span-2 sm:block">
@@ -166,7 +183,7 @@ function statusTooltip(statusInitial: string, statusDate: string): string {
                 </TooltipProvider>
               </div>
               <!-- Broker (acronym + tooltip) -->
-              <div class="hidden text-sm text-muted-foreground sm:col-span-2 sm:block">
+              <div class="hidden text-sm text-muted-foreground sm:col-span-1 sm:block">
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger as-child>
@@ -180,14 +197,17 @@ function statusTooltip(statusInitial: string, statusDate: string): string {
                   </Tooltip>
                 </TooltipProvider>
               </div>
-              <!-- Current Status (short initial + tooltip) -->
-              <div class="hidden text-sm font-medium text-foreground sm:col-span-1 sm:block">
+              <!-- Current Status (colored badge + tooltip) -->
+              <div class="hidden sm:col-span-1 sm:block">
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger as-child>
-                      <span class="cursor-help underline decoration-dotted">
+                      <Badge
+                        :class="statusBadgeClass(item.statusInitial)"
+                        class="cursor-help"
+                      >
                         {{ item.statusInitial }}
-                      </span>
+                      </Badge>
                     </TooltipTrigger>
                     <TooltipContent>
                       <p>{{ statusTooltip(item.statusInitial, item.statusDate) }}</p>
@@ -195,14 +215,19 @@ function statusTooltip(statusInitial: string, statusDate: string): string {
                   </Tooltip>
                 </TooltipProvider>
               </div>
-              <!-- Aging -->
-              <div class="hidden text-right text-sm text-muted-foreground sm:col-span-2 sm:block">
+              <!-- Aging (color-coded) -->
+              <div
+                class="hidden text-right text-sm font-medium sm:col-span-1 sm:block"
+                :class="agingClass(item.agingDays)"
+              >
                 {{ item.agingDays }}d
               </div>
               <!-- Mobile row -->
               <div class="mt-1.5 flex items-center justify-between text-xs text-muted-foreground sm:hidden">
-                <span>{{ item.statusInitial }} • {{ item.agingDays }}d</span>
-                <span>{{ formatCompanyAcronym(item.broker) }}</span>
+                <Badge :class="statusBadgeClass(item.statusInitial)" class="text-xs">
+                  {{ item.statusInitial }}
+                </Badge>
+                <span :class="agingClass(item.agingDays)">{{ item.agingDays }}d</span>
               </div>
             </RouterLink>
           </li>
