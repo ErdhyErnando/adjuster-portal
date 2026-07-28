@@ -1,12 +1,11 @@
-import type { CaseSummary } from '@/types/case'
+import type { CaseDivision, CaseLineOfBusiness, CaseReportProgress, CaseSummary } from '@/types/case'
 
 /**
  * Atlas case summary mock data.
  *
- * Derived from the atlas-cmp-test placeholder dataset and expanded
- * with full CaseSummary fields so the dashboard recent cases table
- * and the future Sprint 3 case list have enough rows to demonstrate
- * pagination, search, and status breakdown.
+ * The list is aligned with the atlas-cmp-test domain model and enhanced for
+ * the adjuster cases route: LOB, division/type, DOL, full broker names,
+ * report-progress status, instruction notes, and adjuster notes.
  */
 
 const insurers = [
@@ -31,32 +30,41 @@ const brokers = [
   'PT MAI BROKER',
 ] as const
 
-const divisions = [
-  'Marine Cargo',
-  'Fire',
-  'All Risk',
-  'Property',
-  'Engineering',
-  'Motor',
-  'Liabilities',
+const classifications: Array<{
+  lineOfBusiness: CaseLineOfBusiness
+  typeOfDivision: CaseDivision
+}> = [
+  { lineOfBusiness: 'Marine', typeOfDivision: 'Marine Cargo' },
+  { lineOfBusiness: 'Property', typeOfDivision: 'Property' },
+  { lineOfBusiness: 'Engineering', typeOfDivision: 'Heavy Equipment' },
 ] as const
 
-function statusFromValue(value: number): { currentStatus: string, statusInitial: string } {
-  if (value >= 100)
-    return { currentStatus: 'Closed', statusInitial: 'CLOSED' }
+const instructionNotes = [
+  'Confirm cause of loss and collect supporting cargo documents.',
+  'Arrange site survey and verify repair/reinstatement estimate.',
+  'Review chronology, photos, and equipment maintenance records.',
+  'Prioritize reserve recommendation for insurer review.',
+  'Validate salvage opportunity and third-party recovery potential.',
+] as const
+
+const adjusterNotes = [
+  'Awaiting additional photos from insured before report update.',
+  'Survey completed; draft findings under internal review.',
+  'Broker requested expedited update before weekly claims meeting.',
+  'Need insurer confirmation on policy deductible application.',
+  'Documents complete; report can proceed to next milestone.',
+] as const
+
+function statusFromValue(value: number): { currentStatus: string, status: CaseReportProgress } {
   if (value >= 95)
-    return { currentStatus: 'Final Report Issued', statusInitial: 'FR' }
-  if (value >= 85)
-    return { currentStatus: 'Draft Final Report', statusInitial: 'DFR' }
-  if (value >= 70)
-    return { currentStatus: 'Interim Report', statusInitial: 'IR' }
+    return { currentStatus: 'Final Report', status: 'FR' }
+  if (value >= 80)
+    return { currentStatus: 'Draft Final Report', status: 'DFR' }
   if (value >= 55)
-    return { currentStatus: 'Status Update Report', statusInitial: 'SUR' }
+    return { currentStatus: 'Status Update Report', status: 'SUR' }
   if (value >= 40)
-    return { currentStatus: 'Preliminary Report', statusInitial: 'PR' }
-  if (value >= 30)
-    return { currentStatus: 'Initial Assessment', statusInitial: 'IA' }
-  return { currentStatus: 'Adjuster Appointment', statusInitial: 'AA' }
+    return { currentStatus: 'Preliminary Report', status: 'PR' }
+  return { currentStatus: 'Initial Assessment', status: 'IA' }
 }
 
 function calculateAgingDays(dateOfInstruction: string): number {
@@ -103,19 +111,26 @@ const rawCases: Array<{
 ]
 
 export const casesMockData: CaseSummary[] = rawCases.map((raw, index) => {
-  const { currentStatus, statusInitial } = statusFromValue(raw.caseStatus)
+  const { currentStatus, status } = statusFromValue(raw.caseStatus)
   const agingDays = calculateAgingDays(raw.dateOfInstruction)
+  const classification = classifications[index % classifications.length]
 
   return {
     ...raw,
+    status,
     currentStatus,
-    statusInitial,
+    statusInitial: status,
     statusDate: raw.dateOfInstruction,
     insurer: insurers[index % insurers.length],
     broker: brokers[index % brokers.length],
-    division: divisions[index % divisions.length],
+    division: classification.typeOfDivision,
+    lineOfBusiness: classification.lineOfBusiness,
+    typeOfDivision: classification.typeOfDivision,
     agingDays,
+    instructionNotes: instructionNotes[index % instructionNotes.length],
+    adjusterNotes: adjusterNotes[index % adjusterNotes.length],
     feeEstimate: 4_000_000 + (index % 9) * 500_000,
+    grossClaim: 650_000_000 + (index % 12) * 125_000_000,
   }
 })
 
