@@ -126,4 +126,3 @@ export const casesMockData: CaseSummary[] = rawCases.map((raw, index) => {
  */
 export const recentCasesMockData: CaseSummary[] = [...casesMockData]
   .sort((a, b) => new Date(b.dateOfInstruction).getTime() - new Date(a.dateOfInstruction).getTime())
-  .slice(0, 12)
