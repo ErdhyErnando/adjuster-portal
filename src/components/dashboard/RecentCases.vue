@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
-import { Search } from '@lucide/vue'
-import { Badge } from '@/components/ui/badge'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
+import { computed, ref, watch } from "vue";
+import { Search } from "@lucide/vue";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import {
   Pagination,
   PaginationContent,
@@ -11,64 +11,59 @@ import {
   PaginationItem,
   PaginationNext,
   PaginationPrevious,
-} from '@/components/ui/pagination'
-import { Skeleton } from '@/components/ui/skeleton'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
-import { formatCompanyAcronym, formatDateId } from '@/lib/formatters'
-import type { CaseListItem } from '@/types/case'
+} from "@/components/ui/pagination";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { formatCompanyAcronym, formatDateId } from "@/lib/formatters";
+import type { CaseListItem } from "@/types/case";
 
 function statusBadgeClass(status: string): string {
   switch (status.toUpperCase()) {
-    case 'FR':
-      return 'bg-emerald-500/15 text-emerald-600'
-    case 'DFR':
-      return 'bg-orange-500/15 text-orange-600'
-    case 'SUR':
-      return 'bg-amber-500/15 text-amber-600'
-    case 'IR':
-      return 'bg-cyan-500/15 text-cyan-600'
-    case 'PR':
-      return 'bg-violet-500/15 text-violet-600'
-    case 'IA':
-      return 'bg-indigo-500/15 text-indigo-600'
-    case 'CLOSED':
-      return 'bg-slate-400/15 text-slate-500'
+    case "FR":
+      return "bg-emerald-500/15 text-emerald-600";
+    case "DFR":
+      return "bg-orange-500/15 text-orange-600";
+    case "SUR":
+      return "bg-amber-500/15 text-amber-600";
+    case "IR":
+      return "bg-cyan-500/15 text-cyan-600";
+    case "PR":
+      return "bg-violet-500/15 text-violet-600";
+    case "IA":
+      return "bg-indigo-500/15 text-indigo-600";
+    case "CLOSED":
+      return "bg-slate-400/15 text-slate-500";
     default:
-      return 'bg-gray-400/15 text-gray-500'
+      return "bg-gray-400/15 text-gray-500";
   }
 }
 
 function agingClass(days: number): string {
-  if (days < 7) return 'text-emerald-600'
-  if (days <= 14) return 'text-amber-600'
-  return 'text-red-600'
+  if (days < 7) return "text-emerald-600";
+  if (days <= 14) return "text-amber-600";
+  return "text-red-600";
 }
 
 function statusTooltip(statusInitial: string, statusDate: string): string {
-  return `${statusInitial} issued on ${formatDateId(statusDate)}`
+  return `${statusInitial} issued on ${formatDateId(statusDate)}`;
 }
 
 interface Props {
-  cases: CaseListItem[]
-  isLoading?: boolean
+  cases: CaseListItem[];
+  isLoading?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
   isLoading: false,
-})
+});
 
-const ITEMS_PER_PAGE = 5
-const currentPage = ref(1)
-const searchQuery = ref('')
+const ITEMS_PER_PAGE = 5;
+const currentPage = ref(1);
+const searchQuery = ref("");
 
 const filteredCases = computed(() => {
-  const query = searchQuery.value.trim().toLowerCase()
-  if (!query) return props.cases
+  const query = searchQuery.value.trim().toLowerCase();
+  if (!query) return props.cases;
 
   return props.cases.filter(
     (c) =>
@@ -79,30 +74,30 @@ const filteredCases = computed(() => {
       c.statusInitial.toLowerCase().includes(query) ||
       c.currentStatus.toLowerCase().includes(query) ||
       c.division.toLowerCase().includes(query),
-  )
-})
+  );
+});
 
-const totalPages = computed(() => Math.ceil(filteredCases.value.length / ITEMS_PER_PAGE))
+const totalPages = computed(() => Math.ceil(filteredCases.value.length / ITEMS_PER_PAGE));
 
 const paginatedCases = computed(() => {
-  const start = (currentPage.value - 1) * ITEMS_PER_PAGE
-  return filteredCases.value.slice(start, start + ITEMS_PER_PAGE)
-})
+  const start = (currentPage.value - 1) * ITEMS_PER_PAGE;
+  return filteredCases.value.slice(start, start + ITEMS_PER_PAGE);
+});
 
 watch(
   () => filteredCases.value.length,
   (length) => {
-    const maxPage = Math.max(1, Math.ceil(length / ITEMS_PER_PAGE))
+    const maxPage = Math.max(1, Math.ceil(length / ITEMS_PER_PAGE));
     if (currentPage.value > maxPage) {
-      currentPage.value = maxPage
+      currentPage.value = maxPage;
     }
   },
-)
+);
 
 // Reset page when search query changes
 watch(searchQuery, () => {
-  currentPage.value = 1
-})
+  currentPage.value = 1;
+});
 </script>
 
 <template>
@@ -114,11 +109,7 @@ watch(searchQuery, () => {
           <Search
             class="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
           />
-          <Input
-            v-model="searchQuery"
-            placeholder="Search cases..."
-            class="h-8 pl-8 text-sm"
-          />
+          <Input v-model="searchQuery" placeholder="Search cases..." class="h-8 pl-8 text-sm" />
         </div>
       </div>
     </CardHeader>
@@ -154,9 +145,7 @@ watch(searchQuery, () => {
               class="group block px-4 py-3 sm:grid sm:grid-cols-12 sm:items-center"
             >
               <div class="min-w-0 sm:col-span-3">
-                <p
-                  class="truncate text-sm font-medium text-foreground group-hover:text-primary"
-                >
+                <p class="truncate text-sm font-medium text-foreground group-hover:text-primary">
                   {{ item.atlasRef }}
                 </p>
                 <p class="text-xs text-muted-foreground sm:hidden">
@@ -202,10 +191,7 @@ watch(searchQuery, () => {
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger as-child>
-                      <Badge
-                        :class="statusBadgeClass(item.statusInitial)"
-                        class="cursor-help"
-                      >
+                      <Badge :class="statusBadgeClass(item.statusInitial)" class="cursor-help">
                         {{ item.statusInitial }}
                       </Badge>
                     </TooltipTrigger>
@@ -223,7 +209,9 @@ watch(searchQuery, () => {
                 {{ item.agingDays }}d
               </div>
               <!-- Mobile row -->
-              <div class="mt-1.5 flex items-center justify-between text-xs text-muted-foreground sm:hidden">
+              <div
+                class="mt-1.5 flex items-center justify-between text-xs text-muted-foreground sm:hidden"
+              >
                 <Badge :class="statusBadgeClass(item.statusInitial)" class="text-xs">
                   {{ item.statusInitial }}
                 </Badge>
@@ -242,9 +230,7 @@ watch(searchQuery, () => {
           :total="filteredCases.length"
           class="justify-between border-t px-4 py-2"
         >
-          <span class="text-xs text-muted-foreground">
-            Page {{ page }} of {{ totalPages }}
-          </span>
+          <span class="text-xs text-muted-foreground"> Page {{ page }} of {{ totalPages }} </span>
           <PaginationContent v-slot="{ items }">
             <PaginationPrevious />
             <template v-for="(item, index) in items" :key="index">
@@ -267,7 +253,7 @@ watch(searchQuery, () => {
       </div>
 
       <div v-else class="rounded-lg border bg-card py-8 text-center text-sm text-muted-foreground">
-        {{ searchQuery ? 'No cases match your search.' : 'No recent cases.' }}
+        {{ searchQuery ? "No cases match your search." : "No recent cases." }}
       </div>
     </CardContent>
   </Card>

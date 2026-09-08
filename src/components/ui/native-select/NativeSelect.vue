@@ -1,31 +1,31 @@
 <script setup lang="ts">
-import type { AcceptableValue } from 'reka-ui'
+import type { AcceptableValue } from "reka-ui";
 
-import type { HTMLAttributes } from 'vue'
-import { ChevronDownIcon } from '@lucide/vue'
-import { reactiveOmit, useVModel } from '@vueuse/core'
-import { cn } from '@/lib/utils'
+import type { HTMLAttributes } from "vue";
+import { ChevronDownIcon } from "@lucide/vue";
+import { reactiveOmit, useVModel } from "@vueuse/core";
+import { cn } from "@/lib/utils";
 
 defineOptions({
   inheritAttrs: false,
-})
+});
 
 const props = defineProps<{
-  modelValue?: AcceptableValue | AcceptableValue[]
-  class?: HTMLAttributes['class']
-  size?: 'sm' | 'default'
-}>()
+  modelValue?: AcceptableValue | AcceptableValue[];
+  class?: HTMLAttributes["class"];
+  size?: "sm" | "default";
+}>();
 
 const emit = defineEmits<{
-  'update:modelValue': AcceptableValue
-}>()
+  "update:modelValue": AcceptableValue;
+}>();
 
-const modelValue = useVModel(props, 'modelValue', emit, {
+const modelValue = useVModel(props, "modelValue", emit, {
   passive: true,
-  defaultValue: '',
-})
+  defaultValue: "",
+});
 
-const delegatedProps = reactiveOmit(props, 'class', 'size')
+const delegatedProps = reactiveOmit(props, "class", "size");
 </script>
 
 <template>
@@ -43,6 +43,10 @@ const delegatedProps = reactiveOmit(props, 'class', 'size')
     >
       <slot />
     </select>
-    <ChevronDownIcon class="text-muted-foreground top-1/2 right-2.5 size-4 -translate-y-1/2 pointer-events-none absolute select-none" aria-hidden="true" data-slot="native-select-icon" />
+    <ChevronDownIcon
+      class="text-muted-foreground top-1/2 right-2.5 size-4 -translate-y-1/2 pointer-events-none absolute select-none"
+      aria-hidden="true"
+      data-slot="native-select-icon"
+    />
   </div>
 </template>

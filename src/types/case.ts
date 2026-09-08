@@ -5,74 +5,74 @@
  * keeping dashboard-compatible aliases such as statusInitial/currentStatus.
  */
 
-export type CaseLineOfBusiness = 'Marine' | 'Property' | 'Engineering'
+export type CaseLineOfBusiness = "Marine" | "Property" | "Engineering";
 
-export type CaseDivision = 'Marine Cargo' | 'Property' | 'Heavy Equipment'
+export type CaseDivision = "Marine Cargo" | "Property" | "Heavy Equipment";
 
 /** Report progress/status shown to adjusters. */
-export type CaseReportProgress = 'IA' | 'PR' | 'SUR' | 'DFR' | 'FR'
+export type CaseReportProgress = "IA" | "PR" | "SUR" | "DFR" | "FR";
 
 export interface CaseLocation {
-  address: string
+  address: string;
 }
 
 export interface CaseMessage {
-  id: string
-  sender: string
-  senderName: string
-  message: string
-  timestamp: string
+  id: string;
+  sender: string;
+  senderName: string;
+  message: string;
+  timestamp: string;
 }
 
 export interface CaseSummary {
-  id: string
-  caseNumb: number
+  id: string;
+  caseNumb: number;
   /** Human-readable Atlas case reference, e.g. "96933.M.11.2025/MC/LA". */
-  atlasRef: string
+  atlasRef: string;
   /** Numeric completion/progress status (0–100). */
-  caseStatus: number
+  caseStatus: number;
   /** Current report progress code. Mirrors statusInitial for older widgets. */
-  status: CaseReportProgress
+  status: CaseReportProgress;
   /** Current milestone label, e.g. "Draft Final Report". */
-  currentStatus: string
+  currentStatus: string;
   /** Short report progress code, e.g. "IA", "DFR", "FR". */
-  statusInitial: CaseReportProgress
+  statusInitial: CaseReportProgress;
   /** Date when the current report progress was reached (ISO). */
-  statusDate: string
-  insured: string
-  insurer: string
+  statusDate: string;
+  insured: string;
+  insurer: string;
   /** Full broker name. Do not replace with initials in the cases table. */
-  broker: string
+  broker: string;
   /** Backward-compatible display division alias. Mirrors typeOfDivision. */
-  division: CaseDivision
+  division: CaseDivision;
   /** Broad LOB used for filtering/grouping. */
-  lineOfBusiness: CaseLineOfBusiness
+  lineOfBusiness: CaseLineOfBusiness;
   /** Display division/type: Marine Cargo, Property, or Heavy Equipment. */
-  typeOfDivision: CaseDivision
+  typeOfDivision: CaseDivision;
   /** ISO date when the case was instructed. */
-  dateOfInstruction: string
+  dateOfInstruction: string;
   /** ISO date of loss. */
-  dateOfLoss: string
+  dateOfLoss: string;
   /** Computed aging in days from dateOfInstruction. */
-  agingDays: number
+  agingDays: number;
   /** Instruction notes from insurer/broker/client. */
-  instructionNotes: string
+  instructionNotes: string;
   /** Internal adjuster notes/remarks. */
-  adjusterNotes: string
+  adjusterNotes: string;
   /** Estimated fee in IDR rupiah integer. */
-  feeEstimate: number
+  feeEstimate: number;
   /** Gross claim exposure in IDR rupiah integer. */
-  grossClaim?: number
+  grossClaim?: number;
 }
 
-export type CaseListItem = CaseSummary
+export type CaseListItem = CaseSummary;
 
 export interface CaseDetail extends CaseSummary {
-  insurerRef: string
-  noPolicy: string
-  specialAccount: string
-  assignment: string
-  objectClaim: string
-  location: CaseLocation
-  messages: CaseMessage[]
+  insurerRef: string;
+  noPolicy: string;
+  specialAccount: string;
+  assignment: string;
+  objectClaim: string;
+  location: CaseLocation;
+  messages: CaseMessage[];
 }

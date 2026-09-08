@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-import { useRoute } from 'vue-router'
-import AppSidebar from '@/components/AppSidebar.vue'
-import { Separator } from '@/components/ui/separator'
-import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar'
+import { computed } from "vue";
+import { useRoute } from "vue-router";
+import AppSidebar from "@/components/AppSidebar.vue";
+import { Separator } from "@/components/ui/separator";
+import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 
-const route = useRoute()
-const pageTitle = computed(() => String(route.meta.title ?? route.name ?? ''))
+const route = useRoute();
+const pageTitle = computed(() => String(route.meta.title ?? route.name ?? ""));
 </script>
 
 <template>

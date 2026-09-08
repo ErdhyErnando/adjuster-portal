@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import { Badge } from '@/components/ui/badge'
-import { formatDateId } from '@/lib/formatters'
-import type { CaseListItem } from '@/types/case'
-import { agingClass, progressBarClass, statusBadgeClass } from './caseListUtils'
+import { Badge } from "@/components/ui/badge";
+import { formatDateId } from "@/lib/formatters";
+import type { CaseListItem } from "@/types/case";
+import { agingClass, progressBarClass, statusBadgeClass } from "./caseListUtils";
 
 interface Props {
-  cases: CaseListItem[]
+  cases: CaseListItem[];
 }
 
-defineProps<Props>()
+defineProps<Props>();
 </script>
 
 <template>
@@ -54,11 +54,16 @@ defineProps<Props>()
             :style="{ width: `${item.caseStatus}%` }"
           />
         </div>
-        <span class="min-w-10 text-right text-xs text-muted-foreground">{{ item.caseStatus }}%</span>
+        <span class="min-w-10 text-right text-xs text-muted-foreground"
+          >{{ item.caseStatus }}%</span
+        >
       </div>
     </RouterLink>
 
-    <div v-if="!cases.length" class="rounded-lg border bg-card py-10 text-center text-sm text-muted-foreground">
+    <div
+      v-if="!cases.length"
+      class="rounded-lg border bg-card py-10 text-center text-sm text-muted-foreground"
+    >
       No cases match the current filters.
     </div>
   </div>

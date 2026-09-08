@@ -1,46 +1,49 @@
 <script setup lang="ts">
-import { Search } from '@lucide/vue'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import type { CaseDivision, CaseLineOfBusiness, CaseReportProgress } from '@/types/case'
-import { ALL, statusLabel } from './caseListUtils'
-import type { AllFilter, DateFilter } from './caseListUtils'
+import { Search } from "@lucide/vue";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import type { CaseDivision, CaseLineOfBusiness, CaseReportProgress } from "@/types/case";
+import { ALL, statusLabel } from "./caseListUtils";
+import type { AllFilter, DateFilter } from "./caseListUtils";
 
 interface Props {
-  search: string
-  lineOfBusiness: AllFilter | CaseLineOfBusiness
-  division: AllFilter | CaseDivision
-  status: AllFilter | CaseReportProgress
-  date: DateFilter
-  lineOfBusinessOptions: CaseLineOfBusiness[]
-  divisionOptions: CaseDivision[]
-  statusOptions: CaseReportProgress[]
-  hasActiveFilters: boolean
+  search: string;
+  lineOfBusiness: AllFilter | CaseLineOfBusiness;
+  division: AllFilter | CaseDivision;
+  status: AllFilter | CaseReportProgress;
+  date: DateFilter;
+  lineOfBusinessOptions: CaseLineOfBusiness[];
+  divisionOptions: CaseDivision[];
+  statusOptions: CaseReportProgress[];
+  hasActiveFilters: boolean;
 }
 
-defineProps<Props>()
+defineProps<Props>();
 
 const emit = defineEmits<{
-  'update:search': [value: string]
-  'update:lineOfBusiness': [value: AllFilter | CaseLineOfBusiness]
-  'update:division': [value: AllFilter | CaseDivision]
-  'update:status': [value: AllFilter | CaseReportProgress]
-  'update:date': [value: DateFilter]
-  clear: []
-}>()
+  "update:search": [value: string];
+  "update:lineOfBusiness": [value: AllFilter | CaseLineOfBusiness];
+  "update:division": [value: AllFilter | CaseDivision];
+  "update:status": [value: AllFilter | CaseReportProgress];
+  "update:date": [value: DateFilter];
+  clear: [];
+}>();
 
-const filterSelectClass = 'case-filter-select h-9 w-full rounded-md border border-input bg-background px-3 pr-9 text-sm text-foreground shadow-xs outline-none transition-colors focus:border-ring focus:ring-2 focus:ring-ring/20 disabled:cursor-not-allowed disabled:opacity-50'
+const filterSelectClass =
+  "case-filter-select h-9 w-full rounded-md border border-input bg-background px-3 pr-9 text-sm text-foreground shadow-xs outline-none transition-colors focus:border-ring focus:ring-2 focus:ring-ring/20 disabled:cursor-not-allowed disabled:opacity-50";
 
 function selectValue(event: Event): string {
-  return (event.target as HTMLSelectElement).value
+  return (event.target as HTMLSelectElement).value;
 }
 </script>
 
 <template>
   <Card class="hidden bg-muted/30 md:block">
     <CardContent class="p-3">
-      <div class="grid gap-2 lg:grid-cols-[minmax(16rem,1.35fr)_repeat(4,minmax(9rem,1fr))_auto] lg:items-center">
+      <div
+        class="grid gap-2 lg:grid-cols-[minmax(16rem,1.35fr)_repeat(4,minmax(9rem,1fr))_auto] lg:items-center"
+      >
         <div class="relative">
           <Search
             class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
@@ -57,7 +60,9 @@ function selectValue(event: Event): string {
           :value="lineOfBusiness"
           :class="filterSelectClass"
           aria-label="Filter by line of business"
-          @change="emit('update:lineOfBusiness', selectValue($event) as AllFilter | CaseLineOfBusiness)"
+          @change="
+            emit('update:lineOfBusiness', selectValue($event) as AllFilter | CaseLineOfBusiness)
+          "
         >
           <option :value="ALL">All LOB</option>
           <option v-for="option in lineOfBusinessOptions" :key="option" :value="option">

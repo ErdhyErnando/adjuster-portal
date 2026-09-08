@@ -1,57 +1,57 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
-import { ChevronDown, Search, SlidersHorizontal } from '@lucide/vue'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import type { CaseDivision, CaseLineOfBusiness, CaseReportProgress } from '@/types/case'
-import { ALL, statusLabel } from './caseListUtils'
-import type { AllFilter, DateFilter } from './caseListUtils'
+import { computed, ref } from "vue";
+import { ChevronDown, Search, SlidersHorizontal } from "@lucide/vue";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import type { CaseDivision, CaseLineOfBusiness, CaseReportProgress } from "@/types/case";
+import { ALL, statusLabel } from "./caseListUtils";
+import type { AllFilter, DateFilter } from "./caseListUtils";
 
 interface Props {
-  search: string
-  lineOfBusiness: AllFilter | CaseLineOfBusiness
-  division: AllFilter | CaseDivision
-  status: AllFilter | CaseReportProgress
-  date: DateFilter
-  lineOfBusinessOptions: CaseLineOfBusiness[]
-  divisionOptions: CaseDivision[]
-  statusOptions: CaseReportProgress[]
-  hasActiveFilters: boolean
+  search: string;
+  lineOfBusiness: AllFilter | CaseLineOfBusiness;
+  division: AllFilter | CaseDivision;
+  status: AllFilter | CaseReportProgress;
+  date: DateFilter;
+  lineOfBusinessOptions: CaseLineOfBusiness[];
+  divisionOptions: CaseDivision[];
+  statusOptions: CaseReportProgress[];
+  hasActiveFilters: boolean;
 }
 
-const props = defineProps<Props>()
+const props = defineProps<Props>();
 
 const emit = defineEmits<{
-  'update:search': [value: string]
-  'update:lineOfBusiness': [value: AllFilter | CaseLineOfBusiness]
-  'update:division': [value: AllFilter | CaseDivision]
-  'update:status': [value: AllFilter | CaseReportProgress]
-  'update:date': [value: DateFilter]
-  clear: []
-}>()
+  "update:search": [value: string];
+  "update:lineOfBusiness": [value: AllFilter | CaseLineOfBusiness];
+  "update:division": [value: AllFilter | CaseDivision];
+  "update:status": [value: AllFilter | CaseReportProgress];
+  "update:date": [value: DateFilter];
+  clear: [];
+}>();
 
-const isOpen = ref(false)
-const filterButtonLabel = computed(() => props.hasActiveFilters ? 'Filters active' : 'Filters')
-const filterSelectClass = 'case-mobile-filter-select h-10 w-full rounded-md border border-input bg-background px-3 pr-9 text-sm text-foreground shadow-xs outline-none transition-colors focus:border-ring focus:ring-2 focus:ring-ring/20 disabled:cursor-not-allowed disabled:opacity-50'
+const isOpen = ref(false);
+const filterButtonLabel = computed(() => (props.hasActiveFilters ? "Filters active" : "Filters"));
+const filterSelectClass =
+  "case-mobile-filter-select h-10 w-full rounded-md border border-input bg-background px-3 pr-9 text-sm text-foreground shadow-xs outline-none transition-colors focus:border-ring focus:ring-2 focus:ring-ring/20 disabled:cursor-not-allowed disabled:opacity-50";
 
 function selectValue(event: Event): string {
-  return (event.target as HTMLSelectElement).value
+  return (event.target as HTMLSelectElement).value;
 }
 </script>
 
 <template>
   <div class="fixed bottom-[calc(5rem+env(safe-area-inset-bottom))] left-4 right-4 z-40 md:hidden">
-    <Card id="mobile-case-filters" v-if="isOpen" class="mb-2 border bg-background/95 shadow-xl backdrop-blur">
+    <Card
+      id="mobile-case-filters"
+      v-if="isOpen"
+      class="mb-2 border bg-background/95 shadow-xl backdrop-blur"
+    >
       <CardContent class="space-y-2 p-3">
         <div class="flex items-center justify-between gap-2">
           <span class="text-sm font-medium">Filters</span>
-          <Button
-            variant="ghost"
-            size="sm"
-            :disabled="!hasActiveFilters"
-            @click="emit('clear')"
-          >
+          <Button variant="ghost" size="sm" :disabled="!hasActiveFilters" @click="emit('clear')">
             Clear
           </Button>
         </div>
@@ -72,7 +72,9 @@ function selectValue(event: Event): string {
           :value="lineOfBusiness"
           :class="filterSelectClass"
           aria-label="Filter by line of business"
-          @change="emit('update:lineOfBusiness', selectValue($event) as AllFilter | CaseLineOfBusiness)"
+          @change="
+            emit('update:lineOfBusiness', selectValue($event) as AllFilter | CaseLineOfBusiness)
+          "
         >
           <option :value="ALL">All LOB</option>
           <option v-for="option in lineOfBusinessOptions" :key="option" :value="option">
@@ -130,10 +132,7 @@ function selectValue(event: Event): string {
         <SlidersHorizontal />
         {{ filterButtonLabel }}
         <span v-if="hasActiveFilters" class="ml-0.5 h-2 w-2 rounded-full bg-current" />
-        <ChevronDown
-          class="transition-transform"
-          :class="isOpen ? 'rotate-180' : ''"
-        />
+        <ChevronDown class="transition-transform" :class="isOpen ? 'rotate-180' : ''" />
       </Button>
     </div>
   </div>

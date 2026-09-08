@@ -1,41 +1,44 @@
 <script setup lang="ts">
-import { Search } from '@lucide/vue'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import type { IouStatus } from '@/types/iou'
-import { ALL, statusLabel } from './iouListUtils'
-import type { AllFilter } from './iouListUtils'
+import { Search } from "@lucide/vue";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import type { IouStatus } from "@/types/iou";
+import { ALL, statusLabel } from "./iouListUtils";
+import type { AllFilter } from "./iouListUtils";
 
 interface Props {
-  search: string
-  division: AllFilter | string
-  status: AllFilter | IouStatus
-  divisionOptions: string[]
-  statusOptions: IouStatus[]
-  hasActiveFilters: boolean
+  search: string;
+  division: AllFilter | string;
+  status: AllFilter | IouStatus;
+  divisionOptions: string[];
+  statusOptions: IouStatus[];
+  hasActiveFilters: boolean;
 }
 
-defineProps<Props>()
+defineProps<Props>();
 
 const emit = defineEmits<{
-  'update:search': [value: string]
-  'update:division': [value: AllFilter | string]
-  'update:status': [value: AllFilter | IouStatus]
-  clear: []
-}>()
+  "update:search": [value: string];
+  "update:division": [value: AllFilter | string];
+  "update:status": [value: AllFilter | IouStatus];
+  clear: [];
+}>();
 
-const filterSelectClass = 'iou-filter-select h-9 w-full rounded-md border border-input bg-background px-3 pr-9 text-sm text-foreground shadow-xs outline-none transition-colors focus:border-ring focus:ring-2 focus:ring-ring/20 disabled:cursor-not-allowed disabled:opacity-50'
+const filterSelectClass =
+  "iou-filter-select h-9 w-full rounded-md border border-input bg-background px-3 pr-9 text-sm text-foreground shadow-xs outline-none transition-colors focus:border-ring focus:ring-2 focus:ring-ring/20 disabled:cursor-not-allowed disabled:opacity-50";
 
 function selectValue(event: Event): string {
-  return (event.target as HTMLSelectElement).value
+  return (event.target as HTMLSelectElement).value;
 }
 </script>
 
 <template>
   <Card class="hidden bg-muted/30 md:block">
     <CardContent class="p-3">
-      <div class="grid gap-2 lg:grid-cols-[minmax(16rem,1.35fr)_repeat(2,minmax(10rem,1fr))_auto] lg:items-center">
+      <div
+        class="grid gap-2 lg:grid-cols-[minmax(16rem,1.35fr)_repeat(2,minmax(10rem,1fr))_auto] lg:items-center"
+      >
         <div class="relative">
           <Search
             class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"

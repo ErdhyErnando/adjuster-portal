@@ -6,26 +6,23 @@
  * convert between ISO strings and CalendarDate instances at the UI boundary.
  */
 
-import { CalendarDate } from '@internationalized/date'
+import { CalendarDate } from "@internationalized/date";
 
 export function isoToCalendarDate(iso: string | null | undefined): CalendarDate | undefined {
-  if (!iso)
-    return undefined
+  if (!iso) return undefined;
 
-  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso)
-  if (!match)
-    return undefined
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso);
+  if (!match) return undefined;
 
-  return new CalendarDate(Number(match[1]), Number(match[2]), Number(match[3]))
+  return new CalendarDate(Number(match[1]), Number(match[2]), Number(match[3]));
 }
 
 export function calendarDateToIso(date: CalendarDate | undefined | null): string {
-  if (!date)
-    return ''
+  if (!date) return "";
 
-  const month = String(date.month).padStart(2, '0')
-  const day = String(date.day).padStart(2, '0')
-  return `${date.year}-${month}-${day}`
+  const month = String(date.month).padStart(2, "0");
+  const day = String(date.day).padStart(2, "0");
+  return `${date.year}-${month}-${day}`;
 }
 
 /**
@@ -33,5 +30,5 @@ export function calendarDateToIso(date: CalendarDate | undefined | null): string
  * Returns a negative number when `a` is before `b`.
  */
 export function compareIsoDates(a: string, b: string): number {
-  return a.localeCompare(b)
+  return a.localeCompare(b);
 }

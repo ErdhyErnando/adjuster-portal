@@ -1,105 +1,101 @@
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from 'vue'
-import { refDebounced } from '@vueuse/core'
-import { Plus } from '@lucide/vue'
-import { Button } from '@/components/ui/button'
-import { Skeleton } from '@/components/ui/skeleton'
-import IouFilterBar from '@/components/ious/IouFilterBar.vue'
-import IouMobileFilterAccordion from '@/components/ious/IouMobileFilterAccordion.vue'
-import IouPaginationControls from '@/components/ious/IouPaginationControls.vue'
-import IouResultsSummary from '@/components/ious/IouResultsSummary.vue'
-import IousDesktopTable from '@/components/ious/IousDesktopTable.vue'
-import IousMobileCards from '@/components/ious/IousMobileCards.vue'
-import { ALL, DEFAULT_PAGE_SIZE } from '@/components/ious/iouListUtils'
-import type { AllFilter } from '@/components/ious/iouListUtils'
-import { useIous } from '@/composables/useIous'
-import type { IouStatus } from '@/types/iou'
+import { computed, onMounted, ref, watch } from "vue";
+import { refDebounced } from "@vueuse/core";
+import { Plus } from "@lucide/vue";
+import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+import IouFilterBar from "@/components/ious/IouFilterBar.vue";
+import IouMobileFilterAccordion from "@/components/ious/IouMobileFilterAccordion.vue";
+import IouPaginationControls from "@/components/ious/IouPaginationControls.vue";
+import IouResultsSummary from "@/components/ious/IouResultsSummary.vue";
+import IousDesktopTable from "@/components/ious/IousDesktopTable.vue";
+import IousMobileCards from "@/components/ious/IousMobileCards.vue";
+import { ALL, DEFAULT_PAGE_SIZE } from "@/components/ious/iouListUtils";
+import type { AllFilter } from "@/components/ious/iouListUtils";
+import { useIous } from "@/composables/useIous";
+import type { IouStatus } from "@/types/iou";
 
-const { data, isLoading, error, loadIous } = useIous()
+const { data, isLoading, error, loadIous } = useIous();
 
-const searchQuery = ref('')
-const debouncedSearchQuery = refDebounced(searchQuery, 150)
-const divisionFilter = ref<AllFilter | string>(ALL)
-const statusFilter = ref<AllFilter | IouStatus>(ALL)
-const pagination = ref({ pageIndex: 0, pageSize: DEFAULT_PAGE_SIZE })
+const searchQuery = ref("");
+const debouncedSearchQuery = refDebounced(searchQuery, 150);
+const divisionFilter = ref<AllFilter | string>(ALL);
+const statusFilter = ref<AllFilter | IouStatus>(ALL);
+const pagination = ref({ pageIndex: 0, pageSize: DEFAULT_PAGE_SIZE });
 
 const divisionOptions = computed(() =>
   [...new Set(data.value.map((iou) => iou.division))].sort((a, b) => a.localeCompare(b)),
-)
+);
 const statusOptions = computed<IouStatus[]>(() =>
   [...new Set(data.value.map((iou) => iou.status))].sort((a, b) => a.localeCompare(b)),
-)
+);
 
 const filteredIous = computed(() => {
-  const query = debouncedSearchQuery.value.trim().toLowerCase()
+  const query = debouncedSearchQuery.value.trim().toLowerCase();
 
   return data.value.filter((iou) => {
-    const matchesSearch = !query || [
-      iou.iouRef,
-      iou.caseNo,
-      iou.adjusterName,
-      iou.insurer,
-      iou.division,
-    ].join(' ').toLowerCase().includes(query)
+    const matchesSearch =
+      !query ||
+      [iou.iouRef, iou.caseNo, iou.adjusterName, iou.insurer, iou.division]
+        .join(" ")
+        .toLowerCase()
+        .includes(query);
 
-    return matchesSearch
-      && (divisionFilter.value === ALL || iou.division === divisionFilter.value)
-      && (statusFilter.value === ALL || iou.status === statusFilter.value)
-  })
-})
+    return (
+      matchesSearch &&
+      (divisionFilter.value === ALL || iou.division === divisionFilter.value) &&
+      (statusFilter.value === ALL || iou.status === statusFilter.value)
+    );
+  });
+});
 
-const pageCount = computed(() => Math.max(1, Math.ceil(filteredIous.value.length / pagination.value.pageSize)))
-const currentPage = computed(() => pagination.value.pageIndex + 1)
+const pageCount = computed(() =>
+  Math.max(1, Math.ceil(filteredIous.value.length / pagination.value.pageSize)),
+);
+const currentPage = computed(() => pagination.value.pageIndex + 1);
 const paginatedIous = computed(() => {
-  const start = pagination.value.pageIndex * pagination.value.pageSize
-  return filteredIous.value.slice(start, start + pagination.value.pageSize)
-})
+  const start = pagination.value.pageIndex * pagination.value.pageSize;
+  return filteredIous.value.slice(start, start + pagination.value.pageSize);
+});
 const resultStart = computed(() =>
-  filteredIous.value.length === 0
-    ? 0
-    : pagination.value.pageIndex * pagination.value.pageSize + 1,
-)
+  filteredIous.value.length === 0 ? 0 : pagination.value.pageIndex * pagination.value.pageSize + 1,
+);
 const resultEnd = computed(() =>
   Math.min(filteredIous.value.length, resultStart.value + pagination.value.pageSize - 1),
-)
-const hasActiveFilters = computed(() => Boolean(
-  searchQuery.value
-  || divisionFilter.value !== ALL
-  || statusFilter.value !== ALL,
-))
+);
+const hasActiveFilters = computed(() =>
+  Boolean(searchQuery.value || divisionFilter.value !== ALL || statusFilter.value !== ALL),
+);
 
 function resetPageIndex() {
-  pagination.value = { ...pagination.value, pageIndex: 0 }
+  pagination.value = { ...pagination.value, pageIndex: 0 };
 }
 
 function setPageSize(size: number) {
-  pagination.value = { pageIndex: 0, pageSize: size }
+  pagination.value = { pageIndex: 0, pageSize: size };
 }
 
 function clearFilters() {
-  searchQuery.value = ''
-  divisionFilter.value = ALL
-  statusFilter.value = ALL
-  resetPageIndex()
+  searchQuery.value = "";
+  divisionFilter.value = ALL;
+  statusFilter.value = ALL;
+  resetPageIndex();
 }
 
-watch(
-  [debouncedSearchQuery, divisionFilter, statusFilter],
-  resetPageIndex,
-)
+watch([debouncedSearchQuery, divisionFilter, statusFilter], resetPageIndex);
 
 watch(
   () => filteredIous.value.length,
   () => {
     if (pagination.value.pageIndex > pageCount.value - 1) {
-      pagination.value = { ...pagination.value, pageIndex: Math.max(0, pageCount.value - 1) }
+      pagination.value = { ...pagination.value, pageIndex: Math.max(0, pageCount.value - 1) };
     }
   },
-)
+);
 
 onMounted(() => {
-  loadIous()
-})
+  loadIous();
+});
 </script>
 
 <template>
@@ -127,15 +123,11 @@ onMounted(() => {
       v-else-if="error"
       class="rounded-lg border border-destructive/50 bg-destructive/10 p-6 text-center"
     >
-      <p class="text-destructive text-sm font-medium">
-        Failed to load cash advances.
-      </p>
+      <p class="text-destructive text-sm font-medium">Failed to load cash advances.</p>
       <p class="text-muted-foreground mt-1 text-xs">
         {{ error.message }}
       </p>
-      <Button variant="outline" class="mt-4" @click="loadIous">
-        Retry
-      </Button>
+      <Button variant="outline" class="mt-4" @click="loadIous"> Retry </Button>
     </div>
 
     <!-- List content -->

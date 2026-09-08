@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { useTemplateRef, watch } from 'vue'
-import { FlexRender } from '@tanstack/vue-table'
-import type { Table as TanStackTable } from '@tanstack/vue-table'
-import { useElementSize, useWindowSize } from '@vueuse/core'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
+import { useTemplateRef, watch } from "vue";
+import { FlexRender } from "@tanstack/vue-table";
+import type { Table as TanStackTable } from "@tanstack/vue-table";
+import { useElementSize, useWindowSize } from "@vueuse/core";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -13,48 +13,47 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table'
+} from "@/components/ui/table";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { formatCompanyAcronym } from "@/lib/formatters";
+import type { CaseListItem } from "@/types/case";
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
-import { formatCompanyAcronym } from '@/lib/formatters'
-import type { CaseListItem } from '@/types/case'
-import { agingClass, COMPACT_PAGE_SIZE, DEFAULT_PAGE_SIZE, progressBarClass, statusBadgeClass } from './caseListUtils'
+  agingClass,
+  COMPACT_PAGE_SIZE,
+  DEFAULT_PAGE_SIZE,
+  progressBarClass,
+  statusBadgeClass,
+} from "./caseListUtils";
 
 interface Props {
-  table: TanStackTable<CaseListItem>
-  columnCount: number
-  pageSize: number
+  table: TanStackTable<CaseListItem>;
+  columnCount: number;
+  pageSize: number;
 }
 
-const props = defineProps<Props>()
+const props = defineProps<Props>();
 
 const emit = defineEmits<{
-  compactNeeded: [pageSize: number]
-}>()
+  compactNeeded: [pageSize: number];
+}>();
 
-const tableShellRef = useTemplateRef<HTMLElement>('tableShellRef')
-const { height: viewportHeight } = useWindowSize()
-const { height: tableShellHeight } = useElementSize(tableShellRef)
+const tableShellRef = useTemplateRef<HTMLElement>("tableShellRef");
+const { height: viewportHeight } = useWindowSize();
+const { height: tableShellHeight } = useElementSize(tableShellRef);
 
 function emitCompactPageSizeIfOverflowing() {
   if (
-    props.pageSize === DEFAULT_PAGE_SIZE
-    && viewportHeight.value > 0
-    && tableShellHeight.value > viewportHeight.value - 180
+    props.pageSize === DEFAULT_PAGE_SIZE &&
+    viewportHeight.value > 0 &&
+    tableShellHeight.value > viewportHeight.value - 180
   ) {
-    emit('compactNeeded', COMPACT_PAGE_SIZE)
+    emit("compactNeeded", COMPACT_PAGE_SIZE);
   }
 }
 
-watch(
-  [viewportHeight, tableShellHeight, () => props.pageSize],
-  emitCompactPageSizeIfOverflowing,
-  { flush: 'post' },
-)
+watch([viewportHeight, tableShellHeight, () => props.pageSize], emitCompactPageSizeIfOverflowing, {
+  flush: "post",
+});
 </script>
 
 <template>
@@ -83,7 +82,9 @@ watch(
               :key="cell.id"
               :class="[
                 cell.column.id === 'broker' ? 'max-w-24' : '',
-                cell.column.id === 'insurer' || cell.column.id === 'insured' ? 'max-w-60 truncate' : '',
+                cell.column.id === 'insurer' || cell.column.id === 'insured'
+                  ? 'max-w-60 truncate'
+                  : '',
                 cell.column.id === 'progressActions' ? 'text-right' : '',
               ]"
             >
@@ -144,17 +145,11 @@ watch(
                 </Button>
               </div>
 
-              <FlexRender
-                v-else
-                :render="cell.column.columnDef.cell"
-                :props="cell.getContext()"
-              />
+              <FlexRender v-else :render="cell.column.columnDef.cell" :props="cell.getContext()" />
             </TableCell>
           </TableRow>
         </template>
-        <TableEmpty v-else :colspan="columnCount">
-          No cases match the current filters.
-        </TableEmpty>
+        <TableEmpty v-else :colspan="columnCount"> No cases match the current filters. </TableEmpty>
       </TableBody>
     </Table>
   </div>
