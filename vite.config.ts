@@ -1,4 +1,5 @@
 import path from 'node:path'
+import { cloudflare } from '@cloudflare/vite-plugin'
 import tailwindcss from '@tailwindcss/vite'
 import vue from '@vitejs/plugin-vue'
 import { defineConfig } from 'vite'
@@ -9,6 +10,9 @@ export default defineConfig({
   plugins: [
     vue(),
     tailwindcss(),
+    // Must come after framework plugins. Enables `wrangler dev` / deploy
+    // of this SPA as Workers Static Assets. See wrangler.jsonc.
+    cloudflare(),
     VitePWA({
       registerType: 'autoUpdate',
       includeAssets: ['icons/*.png'],
