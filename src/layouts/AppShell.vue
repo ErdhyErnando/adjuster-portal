@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import DesktopLayout from './DesktopLayout.vue'
-import MobileLayout from './MobileLayout.vue'
+import DesktopLayout from "./DesktopLayout.vue";
+import MobileLayout from "./MobileLayout.vue";
 </script>
 
 <template>

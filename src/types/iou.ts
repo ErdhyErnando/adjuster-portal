@@ -7,23 +7,23 @@
  * components/ious/iouListUtils.ts so the set can grow without touching pages.
  */
 
-export type IouStatus = 'draft' | 'pending' | 'approved' | 'rejected'
+export type IouStatus = "draft" | "pending" | "approved" | "rejected";
 
 export interface IouItem {
-  id: string
+  id: string;
   /** Display reference, e.g. "IOU/2026/001". */
-  iouRef: string
+  iouRef: string;
   /** Atlas case reference the advance belongs to, e.g. "97870.M.11.2025/MC/LA". */
-  caseNo: string
+  caseNo: string;
   /** Adjuster who submitted the request. */
-  adjusterName: string
+  adjusterName: string;
   /** Client / insurer the expenses will be charged to. */
-  insurer: string
+  insurer: string;
   /** Adjuster division (Marine Cargo, Property, Heavy Equipment). */
-  division: string
+  division: string;
   /** Requested amount in IDR rupiah integer. */
-  amount: number
-  status: IouStatus
+  amount: number;
+  status: IouStatus;
   /** ISO datetime when the request was submitted. */
-  submittedAt: string
+  submittedAt: string;
 }

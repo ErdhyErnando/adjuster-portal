@@ -1,5 +1,5 @@
-import { dashboardMockData } from '@/mock/data/dashboard'
-import type { AdjusterDashboard } from '@/types/dashboard'
+import { dashboardMockData } from "@/mock/data/dashboard";
+import type { AdjusterDashboard } from "@/types/dashboard";
 
 /**
  * Fetch the adjuster dashboard.
@@ -10,6 +10,6 @@ import type { AdjusterDashboard } from '@/types/dashboard'
  */
 export async function getDashboard(): Promise<AdjusterDashboard> {
   // Simulate a short async boundary so the UI can exercise loading states.
-  await new Promise((resolve) => setTimeout(resolve, 400))
-  return dashboardMockData
+  await new Promise((resolve) => setTimeout(resolve, 400));
+  return dashboardMockData;
 }

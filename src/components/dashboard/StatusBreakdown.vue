@@ -1,35 +1,35 @@
 <script setup lang="ts">
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import type { StatusBreakdownItem } from '@/types/dashboard'
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import type { StatusBreakdownItem } from "@/types/dashboard";
 
 interface Props {
-  items: StatusBreakdownItem[]
+  items: StatusBreakdownItem[];
 }
 
-defineProps<Props>()
+defineProps<Props>();
 
 function statusColor(status: string): string {
   switch (status.toUpperCase()) {
-    case 'DOA':
-      return 'bg-blue-500'
-    case 'IA':
-      return 'bg-indigo-500'
-    case 'PR':
-      return 'bg-violet-500'
-    case 'SUR':
-      return 'bg-amber-500'
-    case 'IR':
-      return 'bg-cyan-500'
-    case 'DFR':
-      return 'bg-orange-500'
-    case 'FR':
-      return 'bg-emerald-500'
-    case 'SR':
-      return 'bg-teal-500'
-    case 'CLOSED':
-      return 'bg-slate-500'
+    case "DOA":
+      return "bg-blue-500";
+    case "IA":
+      return "bg-indigo-500";
+    case "PR":
+      return "bg-violet-500";
+    case "SUR":
+      return "bg-amber-500";
+    case "IR":
+      return "bg-cyan-500";
+    case "DFR":
+      return "bg-orange-500";
+    case "FR":
+      return "bg-emerald-500";
+    case "SR":
+      return "bg-teal-500";
+    case "CLOSED":
+      return "bg-slate-500";
     default:
-      return 'bg-gray-400'
+      return "bg-gray-400";
   }
 }
 </script>
@@ -48,10 +48,7 @@ function statusColor(status: string): string {
           class="flex items-center justify-between rounded-md border bg-card px-3 py-2"
         >
           <div class="flex items-center gap-2">
-            <span
-              class="inline-block h-2.5 w-2.5 rounded-full"
-              :class="statusColor(item.status)"
-            />
+            <span class="inline-block h-2.5 w-2.5 rounded-full" :class="statusColor(item.status)" />
             <span class="text-sm font-medium">{{ item.label }}</span>
           </div>
           <span class="text-sm text-muted-foreground">{{ item.count }}</span>

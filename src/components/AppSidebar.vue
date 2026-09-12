@@ -1,6 +1,13 @@
 <script setup lang="ts">
-import { Briefcase, FileText, LayoutDashboard, Settings, StickyNotePlus, Wallet } from '@lucide/vue'
-import { useRoute } from 'vue-router'
+import {
+  Briefcase,
+  FileText,
+  LayoutDashboard,
+  Settings,
+  StickyNotePlus,
+  Wallet,
+} from "@lucide/vue";
+import { useRoute } from "vue-router";
 import {
   Sidebar,
   SidebarContent,
@@ -12,20 +19,20 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarRail,
-} from '@/components/ui/sidebar'
+} from "@/components/ui/sidebar";
 
-const route = useRoute()
+const route = useRoute();
 
 const navItems = [
-  { name: 'Dashboard', to: '/dashboard', icon: LayoutDashboard },
-  { name: 'Cases', to: '/cases', icon: Briefcase },
-  { name: 'Cash Advance', to: '/iou', icon: Wallet },
-  { name: 'IOU Report', to: '/iou-report', icon: FileText },
-  { name: 'Settings', to: '/settings', icon: Settings },
-]
+  { name: "Dashboard", to: "/dashboard", icon: LayoutDashboard },
+  { name: "Cases", to: "/cases", icon: Briefcase },
+  { name: "Cash Advance", to: "/iou", icon: Wallet },
+  { name: "IOU Report", to: "/iou-report", icon: FileText },
+  { name: "Settings", to: "/settings", icon: Settings },
+];
 
 function isActive(path: string): boolean {
-  return route.path === path || (path !== '/' && route.path.startsWith(path))
+  return route.path === path || (path !== "/" && route.path.startsWith(path));
 }
 </script>
 
@@ -43,11 +50,7 @@ function isActive(path: string): boolean {
               <div
                 class="flex aspect-square size-8 items-center justify-center rounded-lg bg-white text-sidebar-primary-foreground"
               >
-                <img
-                  src="/atlas-logo-wide.png"
-                  alt="Atlas Adjusting"
-                  class="h-5 w-auto"
-                >
+                <img src="/atlas-logo-wide.png" alt="Atlas Adjusting" class="h-5 w-auto" />
               </div>
               <div class="grid flex-1 text-left text-sm leading-tight">
                 <span class="truncate font-semibold text-white">Atlas Portal</span>
@@ -64,11 +67,7 @@ function isActive(path: string): boolean {
         <SidebarGroupContent>
           <SidebarMenu class="gap-1">
             <SidebarMenuItem v-for="item in navItems" :key="item.to">
-              <SidebarMenuButton
-                as-child
-                :is-active="isActive(item.to)"
-                :tooltip="item.name"
-              >
+              <SidebarMenuButton as-child :is-active="isActive(item.to)" :tooltip="item.name">
                 <RouterLink :to="item.to">
                   <component :is="item.icon" />
                   <span>{{ item.name }}</span>

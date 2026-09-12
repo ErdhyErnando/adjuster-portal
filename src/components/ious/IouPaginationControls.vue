@@ -1,33 +1,35 @@
 <script setup lang="ts">
-import { Button } from '@/components/ui/button'
+import { Button } from "@/components/ui/button";
 
 interface Props {
-  currentPage: number
-  pageCount: number
-  pageSize: number
-  canPreviousPage: boolean
-  canNextPage: boolean
-  pageSizes?: number[]
+  currentPage: number;
+  pageCount: number;
+  pageSize: number;
+  canPreviousPage: boolean;
+  canNextPage: boolean;
+  pageSizes?: number[];
 }
 
 withDefaults(defineProps<Props>(), {
   pageSizes: () => [5, 10, 15, 25],
-})
+});
 
 const emit = defineEmits<{
-  previous: []
-  next: []
-  pageSizeChange: [value: number]
-}>()
+  previous: [];
+  next: [];
+  pageSizeChange: [value: number];
+}>();
 
 function emitPageSizeChange(event: Event) {
-  const value = Number((event.target as HTMLSelectElement).value)
-  emit('pageSizeChange', value)
+  const value = Number((event.target as HTMLSelectElement).value);
+  emit("pageSizeChange", value);
 }
 </script>
 
 <template>
-  <div class="flex flex-col gap-3 rounded-lg border bg-card px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+  <div
+    class="flex flex-col gap-3 rounded-lg border bg-card px-4 py-3 sm:flex-row sm:items-center sm:justify-between"
+  >
     <div class="flex items-center gap-2 text-sm text-muted-foreground">
       <span>Page {{ currentPage }} of {{ pageCount }}</span>
       <span class="hidden sm:inline">·</span>

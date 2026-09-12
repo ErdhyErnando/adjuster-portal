@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface Props {
-  label: string
-  value: string | number
-  helperText?: string
+  label: string;
+  value: string | number;
+  helperText?: string;
 }
 
 withDefaults(defineProps<Props>(), {
   helperText: undefined,
-})
+});
 </script>
 
 <template>

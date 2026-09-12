@@ -1,5 +1,5 @@
-import { iousMockDataSorted } from '@/mock/data/ious'
-import type { IouItem } from '@/types/iou'
+import { iousMockDataSorted } from "@/mock/data/ious";
+import type { IouItem } from "@/types/iou";
 
 /**
  * Fetch the adjuster's cash advance (IOU) list.
@@ -9,6 +9,6 @@ import type { IouItem } from '@/types/iou'
  * `httpClient<IouItem[]>('/api/v1/adjuster/ious')`.
  */
 export async function getIous(): Promise<IouItem[]> {
-  await new Promise((resolve) => setTimeout(resolve, 400))
-  return iousMockDataSorted
+  await new Promise((resolve) => setTimeout(resolve, 400));
+  return iousMockDataSorted;
 }

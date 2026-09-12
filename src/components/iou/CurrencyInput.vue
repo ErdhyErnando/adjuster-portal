@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import type { HTMLAttributes } from 'vue'
-import { computed, nextTick } from 'vue'
-import { Input } from '@/components/ui/input'
-import { cn } from '@/lib/utils'
+import type { HTMLAttributes } from "vue";
+import { computed, nextTick } from "vue";
+import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
 
 /**
  * Integer-only IDR currency input.
@@ -15,67 +15,63 @@ import { cn } from '@/lib/utils'
  */
 
 interface Props {
-  modelValue?: number | null
-  placeholder?: string
-  id?: string
-  name?: string
-  disabled?: boolean
-  readonly?: boolean
+  modelValue?: number | null;
+  placeholder?: string;
+  id?: string;
+  name?: string;
+  disabled?: boolean;
+  readonly?: boolean;
   /** Hard cap on digits to keep the value sane. */
-  maxDigits?: number
-  class?: HTMLAttributes['class']
+  maxDigits?: number;
+  class?: HTMLAttributes["class"];
 }
 
 const props = withDefaults(defineProps<Props>(), {
   modelValue: null,
-  placeholder: '0',
+  placeholder: "0",
   disabled: false,
   readonly: false,
   maxDigits: 12,
-})
+});
 
 const emit = defineEmits<{
-  'update:modelValue': [value: number | null]
-}>()
+  "update:modelValue": [value: number | null];
+}>();
 
 function formatDisplay(value: number | null | undefined): string {
-  if (value == null)
-    return ''
-  return new Intl.NumberFormat('id-ID', { maximumFractionDigits: 0 }).format(value)
+  if (value == null) return "";
+  return new Intl.NumberFormat("id-ID", { maximumFractionDigits: 0 }).format(value);
 }
 
-const displayValue = computed(() => formatDisplay(props.modelValue))
+const displayValue = computed(() => formatDisplay(props.modelValue));
 
 async function onInput(event: Event) {
-  if (props.readonly)
-    return
+  if (props.readonly) return;
 
-  const el = event.target as HTMLInputElement
-  const raw = el.value
-  const digits = raw.replace(/\D/g, '').slice(0, props.maxDigits)
-  const nextValue = digits === '' ? null : Number(digits)
+  const el = event.target as HTMLInputElement;
+  const raw = el.value;
+  const digits = raw.replace(/\D/g, "").slice(0, props.maxDigits);
+  const nextValue = digits === "" ? null : Number(digits);
 
-  emit('update:modelValue', nextValue)
+  emit("update:modelValue", nextValue);
 
   // Restore the caret after Vue re-renders the formatted value, otherwise
   // typing in the middle of a number jumps the cursor to the end.
-  const formatted = formatDisplay(nextValue)
-  if (formatted === raw)
-    return
+  const formatted = formatDisplay(nextValue);
+  if (formatted === raw) return;
 
-  const caret = el.selectionStart ?? raw.length
-  const digitsBeforeCaret = raw.slice(0, caret).replace(/\D/g, '').length
+  const caret = el.selectionStart ?? raw.length;
+  const digitsBeforeCaret = raw.slice(0, caret).replace(/\D/g, "").length;
 
-  await nextTick()
+  await nextTick();
 
-  let position = 0
-  let seen = 0
+  let position = 0;
+  let seen = 0;
   while (position < formatted.length && seen < digitsBeforeCaret) {
-    if (/[0-9]/.test(formatted[position]))
-      seen++
-    position++
+    if (/[0-9]/.test(formatted[position])) seen++;
+    position++;
   }
-  el.setSelectionRange(position, position)
+  el.setSelectionRange(position, position);
 }
 </script>
 
@@ -99,9 +95,9 @@ async function onInput(event: Event) {
       autocomplete="off"
       :aria-label="name"
       class="text-foreground pl-9 font-medium tabular-nums"
-      :class="readonly
-        ? 'border-muted-foreground/30 bg-muted/70 font-semibold text-foreground'
-        : ''"
+      :class="
+        readonly ? 'border-muted-foreground/30 bg-muted/70 font-semibold text-foreground' : ''
+      "
       @input="onInput"
     />
   </div>

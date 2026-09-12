@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Badge } from '@/components/ui/badge'
+import { Badge } from "@/components/ui/badge";
 import {
   Table,
   TableBody,
@@ -8,20 +8,23 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table'
-import { formatCurrencyIdr, formatDateId } from '@/lib/formatters'
-import type { IouItem } from '@/types/iou'
-import { statusBadgeClass, statusLabel } from './iouListUtils'
+} from "@/components/ui/table";
+import { formatCurrencyIdr, formatDateId } from "@/lib/formatters";
+import type { IouItem } from "@/types/iou";
+import { statusBadgeClass, statusLabel } from "./iouListUtils";
 
 interface Props {
-  ious: IouItem[]
+  ious: IouItem[];
 }
 
-defineProps<Props>()
+defineProps<Props>();
 </script>
 
 <template>
-  <section class="hidden overflow-hidden rounded-lg border bg-card md:block" aria-label="Cash advance list">
+  <section
+    class="hidden overflow-hidden rounded-lg border bg-card md:block"
+    aria-label="Cash advance list"
+  >
     <Table>
       <TableHeader class="bg-muted/50">
         <TableRow>
@@ -57,9 +60,7 @@ defineProps<Props>()
             </TableCell>
           </TableRow>
         </template>
-        <TableEmpty v-else :colspan="7">
-          No cash advances match the current filters.
-        </TableEmpty>
+        <TableEmpty v-else :colspan="7"> No cash advances match the current filters. </TableEmpty>
       </TableBody>
     </Table>
   </section>

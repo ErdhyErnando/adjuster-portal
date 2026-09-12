@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import { Briefcase, Ellipsis, LayoutDashboard, Wallet } from '@lucide/vue'
-import { useRoute } from 'vue-router'
+import { Briefcase, Ellipsis, LayoutDashboard, Wallet } from "@lucide/vue";
+import { useRoute } from "vue-router";
 
-const route = useRoute()
+const route = useRoute();
 
 const tabs = [
-  { name: 'Dashboard', to: '/dashboard', icon: LayoutDashboard },
-  { name: 'Cases', to: '/cases', icon: Briefcase },
-  { name: 'Cash Advance', to: '/iou', icon: Wallet },
-  { name: 'More', to: '/settings', icon: Ellipsis },
-]
+  { name: "Dashboard", to: "/dashboard", icon: LayoutDashboard },
+  { name: "Cases", to: "/cases", icon: Briefcase },
+  { name: "Cash Advance", to: "/iou", icon: Wallet },
+  { name: "More", to: "/settings", icon: Ellipsis },
+];
 </script>
 
 <template>
@@ -18,9 +18,7 @@ const tabs = [
       <slot />
     </main>
 
-    <nav
-      class="fixed bottom-0 left-0 right-0 z-50 border-t bg-background md:hidden"
-    >
+    <nav class="fixed bottom-0 left-0 right-0 z-50 border-t bg-background md:hidden">
       <ul class="flex items-center justify-around px-2 py-2">
         <li v-for="tab in tabs" :key="tab.to">
           <RouterLink

@@ -1,23 +1,19 @@
 <script setup lang="ts">
-import { Badge } from '@/components/ui/badge'
-import { formatCurrencyIdr, formatDateId } from '@/lib/formatters'
-import type { IouItem } from '@/types/iou'
-import { statusBadgeClass, statusLabel } from './iouListUtils'
+import { Badge } from "@/components/ui/badge";
+import { formatCurrencyIdr, formatDateId } from "@/lib/formatters";
+import type { IouItem } from "@/types/iou";
+import { statusBadgeClass, statusLabel } from "./iouListUtils";
 
 interface Props {
-  ious: IouItem[]
+  ious: IouItem[];
 }
 
-defineProps<Props>()
+defineProps<Props>();
 </script>
 
 <template>
   <div class="space-y-3 md:hidden">
-    <article
-      v-for="iou in ious"
-      :key="iou.id"
-      class="rounded-lg border bg-card p-4 shadow-xs"
-    >
+    <article v-for="iou in ious" :key="iou.id" class="rounded-lg border bg-card p-4 shadow-xs">
       <div class="mb-3 flex items-start justify-between gap-3">
         <div class="min-w-0">
           <p class="text-foreground text-sm font-semibold">{{ iou.iouRef }}</p>
@@ -47,7 +43,10 @@ defineProps<Props>()
       </div>
     </article>
 
-    <div v-if="!ious.length" class="rounded-lg border bg-card py-10 text-center text-sm text-muted-foreground">
+    <div
+      v-if="!ious.length"
+      class="rounded-lg border bg-card py-10 text-center text-sm text-muted-foreground"
+    >
       No cash advances match the current filters.
     </div>
   </div>

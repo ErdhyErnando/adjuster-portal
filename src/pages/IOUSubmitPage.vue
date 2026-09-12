@@ -1,71 +1,85 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
-import { Plus, ReceiptText, Save, Send, Stamp, Trash2, Upload, Car } from '@lucide/vue'
-import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Separator } from '@/components/ui/separator'
-import CurrencyInput from '@/components/iou/CurrencyInput.vue'
-import DatePickerField from '@/components/iou/DatePickerField.vue'
-import { compareIsoDates } from '@/lib/date'
-import { formatCurrencyIdr } from '@/lib/formatters'
+import { computed, ref, watch } from "vue";
+import { Plus, ReceiptText, Save, Send, Stamp, Trash2, Upload, Car } from "@lucide/vue";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Separator } from "@/components/ui/separator";
+import CurrencyInput from "@/components/iou/CurrencyInput.vue";
+import DatePickerField from "@/components/iou/DatePickerField.vue";
+import { compareIsoDates } from "@/lib/date";
+import { formatCurrencyIdr } from "@/lib/formatters";
 
 /* ------------------------------------------------------------------ */
 /*  State                                                              */
 /* ------------------------------------------------------------------ */
 
-const caseNo = ref('')
-const formDate = ref('') // ISO YYYY-MM-DD
-const name = ref('Budi Santoso')
-const insurer = ref('')
-const division = ref('')
-const typeOfSurvey = ref('')
-const location = ref('')
-const meetingStart = ref('')
-const meetingEnd = ref('')
+const caseNo = ref("");
+const formDate = ref(""); // ISO YYYY-MM-DD
+const name = ref("Budi Santoso");
+const insurer = ref("");
+const division = ref("");
+const typeOfSurvey = ref("");
+const location = ref("");
+const meetingStart = ref("");
+const meetingEnd = ref("");
 
-const airfare = ref<number | null>(null)
-const hotel = ref<number | null>(null)
-const carRental = ref<number | null>(null)
-const boatRental = ref<number | null>(null)
-const taxi = ref<number | null>(null)
+const airfare = ref<number | null>(null);
+const hotel = ref<number | null>(null);
+const carRental = ref<number | null>(null);
+const boatRental = ref<number | null>(null);
+const taxi = ref<number | null>(null);
 
 interface OtherItem {
-  id: string
-  description: string
-  amount: number | null
+  id: string;
+  description: string;
+  amount: number | null;
 }
 
 function createItemId(): string {
-  return typeof crypto !== 'undefined' && 'randomUUID' in crypto
+  return typeof crypto !== "undefined" && "randomUUID" in crypto
     ? crypto.randomUUID()
-    : `item-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`
+    : `item-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
 }
 
-const otherItems = ref<OtherItem[]>([{ id: createItemId(), description: '', amount: null }])
+const otherItems = ref<OtherItem[]>([{ id: createItemId(), description: "", amount: null }]);
 
-const submissionDialogOpen = ref(false)
+const submissionDialogOpen = ref(false);
 
-const divisionOptions = ['Marine Cargo', 'Property', 'Heavy Equipment'] as const
+const divisionOptions = ["Marine Cargo", "Property", "Heavy Equipment"] as const;
 
 /* ------------------------------------------------------------------ */
 /*  Computed totals                                                    */
 /* ------------------------------------------------------------------ */
 
-const totalTransportation = computed(() =>
-  (carRental.value ?? 0) + (boatRental.value ?? 0) + (taxi.value ?? 0),
-)
+const totalTransportation = computed(
+  () => (carRental.value ?? 0) + (boatRental.value ?? 0) + (taxi.value ?? 0),
+);
 
 const othersTotal = computed(() =>
   otherItems.value.reduce((sum, item) => sum + (item.amount ?? 0), 0),
-)
+);
 
-const grandTotal = computed(() =>
-  (airfare.value ?? 0) + (hotel.value ?? 0) + totalTransportation.value + othersTotal.value,
-)
+const grandTotal = computed(
+  () => (airfare.value ?? 0) + (hotel.value ?? 0) + totalTransportation.value + othersTotal.value,
+);
 
 /* ------------------------------------------------------------------ */
 /*  Validation                                                         */
@@ -73,34 +87,42 @@ const grandTotal = computed(() =>
 
 const requiredFilled = computed(() =>
   Boolean(caseNo.value.trim() && formDate.value && name.value.trim() && division.value),
-)
+);
 
-const canSubmit = computed(() => requiredFilled.value)
+const canSubmit = computed(() => requiredFilled.value);
 
 const meetingRangeError = computed(() => {
-  if (meetingStart.value && meetingEnd.value && compareIsoDates(meetingEnd.value, meetingStart.value) < 0) {
-    return 'End date cannot be before start date'
+  if (
+    meetingStart.value &&
+    meetingEnd.value &&
+    compareIsoDates(meetingEnd.value, meetingStart.value) < 0
+  ) {
+    return "End date cannot be before start date";
   }
-  return ''
-})
+  return "";
+});
 
 // Keep the range invariant: if the start moves past the end, clear the end.
 watch([meetingStart, meetingEnd], () => {
-  if (meetingStart.value && meetingEnd.value && compareIsoDates(meetingEnd.value, meetingStart.value) < 0) {
-    meetingEnd.value = ''
+  if (
+    meetingStart.value &&
+    meetingEnd.value &&
+    compareIsoDates(meetingEnd.value, meetingStart.value) < 0
+  ) {
+    meetingEnd.value = "";
   }
-})
+});
 
 /* ------------------------------------------------------------------ */
 /*  Actions                                                            */
 /* ------------------------------------------------------------------ */
 
 function addOtherItem() {
-  otherItems.value.push({ id: createItemId(), description: '', amount: null })
+  otherItems.value.push({ id: createItemId(), description: "", amount: null });
 }
 
 function removeOtherItem(id: string) {
-  otherItems.value = otherItems.value.filter((item) => item.id !== id)
+  otherItems.value = otherItems.value.filter((item) => item.id !== id);
 }
 
 const formPayload = computed(() => ({
@@ -127,25 +149,24 @@ const formPayload = computed(() => ({
     others: othersTotal.value,
     totalAdvanceRequested: grandTotal.value,
   },
-}))
+}));
 
 function onSaveDraft() {
   // No backend yet — log the draft state for the future Rails integration.
-  console.log('[IOU] save-draft', JSON.parse(JSON.stringify(formPayload.value)))
+  console.log("[IOU] save-draft", JSON.parse(JSON.stringify(formPayload.value)));
 }
 
 function onSubmit() {
-  if (!canSubmit.value)
-    return
-  console.log('[IOU] submit', JSON.parse(JSON.stringify(formPayload.value)))
-  submissionDialogOpen.value = true
+  if (!canSubmit.value) return;
+  console.log("[IOU] submit", JSON.parse(JSON.stringify(formPayload.value)));
+  submissionDialogOpen.value = true;
 }
 
-const approvalRoles: Array<{ title: string, subtitle: string }> = [
-  { title: 'Adjuster (Submitter)', subtitle: 'Budi Santoso · Marine & Energy' },
-  { title: 'Manager', subtitle: 'Pending assignment' },
-  { title: 'Approved By', subtitle: 'Pending approval' },
-]
+const approvalRoles: Array<{ title: string; subtitle: string }> = [
+  { title: "Adjuster (Submitter)", subtitle: "Budi Santoso · Marine & Energy" },
+  { title: "Manager", subtitle: "Pending assignment" },
+  { title: "Approved By", subtitle: "Pending approval" },
+];
 </script>
 
 <template>
@@ -155,11 +176,7 @@ const approvalRoles: Array<{ title: string, subtitle: string }> = [
       <CardContent class="flex flex-col gap-4 md:flex-row md:items-center">
         <div class="flex min-w-0 items-center gap-3">
           <div class="bg-muted flex size-12 shrink-0 items-center justify-center rounded-lg">
-            <img
-              src="/atlas-logo-wide.png"
-              alt="Atlas Adjusting Indonesia"
-              class="h-8 w-auto"
-            >
+            <img src="/atlas-logo-wide.png" alt="Atlas Adjusting Indonesia" class="h-8 w-auto" />
           </div>
           <div class="min-w-0">
             <p class="text-muted-foreground text-xs font-semibold uppercase tracking-widest">
@@ -193,24 +210,14 @@ const approvalRoles: Array<{ title: string, subtitle: string }> = [
       </CardHeader>
       <CardContent>
         <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-          <DatePickerField
-            v-model="formDate"
-            label="Date"
-            placeholder="Select date"
-          />
+          <DatePickerField v-model="formDate" label="Date" placeholder="Select date" />
 
           <div>
             <Label for="iou-name" class="text-foreground">
               Name
               <span class="text-destructive" aria-hidden="true">*</span>
             </Label>
-            <Input
-              id="iou-name"
-              v-model="name"
-              placeholder="Adjuster name"
-              class="mt-1.5"
-            >
-            </Input>
+            <Input id="iou-name" v-model="name" placeholder="Adjuster name" class="mt-1.5"> </Input>
           </div>
 
           <div>
@@ -234,11 +241,7 @@ const approvalRoles: Array<{ title: string, subtitle: string }> = [
                 <SelectValue placeholder="Select division" />
               </SelectTrigger>
               <SelectContent position="popper">
-                <SelectItem
-                  v-for="option in divisionOptions"
-                  :key="option"
-                  :value="option"
-                >
+                <SelectItem v-for="option in divisionOptions" :key="option" :value="option">
                   {{ option }}
                 </SelectItem>
               </SelectContent>
@@ -334,7 +337,9 @@ const approvalRoles: Array<{ title: string, subtitle: string }> = [
             <div class="grid grid-cols-1 items-center gap-2 sm:grid-cols-2">
               <Label for="iou-total-transportation" class="text-foreground">
                 Total Transportation
-                <span class="text-muted-foreground ml-1 text-xs font-normal">(auto-calculated)</span>
+                <span class="text-muted-foreground ml-1 text-xs font-normal"
+                  >(auto-calculated)</span
+                >
               </Label>
               <CurrencyInput
                 id="iou-total-transportation"
@@ -370,10 +375,7 @@ const approvalRoles: Array<{ title: string, subtitle: string }> = [
                   :placeholder="`Expense description (item ${index + 1})`"
                   class="h-8"
                 />
-                <CurrencyInput
-                  v-model="item.amount"
-                  placeholder="Amount"
-                />
+                <CurrencyInput v-model="item.amount" placeholder="Amount" />
                 <Button
                   variant="ghost"
                   size="icon"
@@ -386,9 +388,7 @@ const approvalRoles: Array<{ title: string, subtitle: string }> = [
                 </Button>
               </li>
             </ul>
-            <p v-else class="text-muted-foreground text-xs">
-              No additional expenses added.
-            </p>
+            <p v-else class="text-muted-foreground text-xs">No additional expenses added.</p>
           </CardContent>
         </Card>
       </CardContent>
@@ -453,11 +453,7 @@ const approvalRoles: Array<{ title: string, subtitle: string }> = [
       </CardHeader>
       <CardContent>
         <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
-          <div
-            v-for="role in approvalRoles"
-            :key="role.title"
-            class="rounded-lg border p-3"
-          >
+          <div v-for="role in approvalRoles" :key="role.title" class="rounded-lg border p-3">
             <p class="text-foreground text-sm font-medium">{{ role.title }}</p>
             <p class="text-muted-foreground mt-0.5 text-xs">{{ role.subtitle }}</p>
             <div
@@ -496,9 +492,10 @@ const approvalRoles: Array<{ title: string, subtitle: string }> = [
         <AlertDialogHeader>
           <AlertDialogTitle>Application Submitted</AlertDialogTitle>
           <AlertDialogDescription>
-            Cash advance request for case <span class="text-foreground font-medium">{{ caseNo || '—' }}</span>
-            has been logged locally ({{ formatCurrencyIdr(grandTotal) }}).
-            Submission to the backend will be wired in a later sprint.
+            Cash advance request for case
+            <span class="text-foreground font-medium">{{ caseNo || "—" }}</span> has been logged
+            locally ({{ formatCurrencyIdr(grandTotal) }}). Submission to the backend will be wired
+            in a later sprint.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>

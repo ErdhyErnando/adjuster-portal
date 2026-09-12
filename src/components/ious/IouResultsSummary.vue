@@ -1,11 +1,11 @@
 <script setup lang="ts">
 interface Props {
-  resultStart: number
-  resultEnd: number
-  total: number
+  resultStart: number;
+  resultEnd: number;
+  total: number;
 }
 
-defineProps<Props>()
+defineProps<Props>();
 </script>
 
 <template>

@@ -1,18 +1,18 @@
 <script setup lang="ts">
-import { onMounted } from 'vue'
-import { StickyNotePlus } from '@lucide/vue'
-import { Button } from '@/components/ui/button'
-import { Skeleton } from '@/components/ui/skeleton'
-import RecentCases from '@/components/dashboard/RecentCases.vue'
-import StatsCard from '@/components/dashboard/StatsCard.vue'
-import StatusBreakdown from '@/components/dashboard/StatusBreakdown.vue'
-import { useDashboard } from '@/composables/useDashboard'
+import { onMounted } from "vue";
+import { StickyNotePlus } from "@lucide/vue";
+import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+import RecentCases from "@/components/dashboard/RecentCases.vue";
+import StatsCard from "@/components/dashboard/StatsCard.vue";
+import StatusBreakdown from "@/components/dashboard/StatusBreakdown.vue";
+import { useDashboard } from "@/composables/useDashboard";
 
-const { data, isLoading, error, loadDashboard } = useDashboard()
+const { data, isLoading, error, loadDashboard } = useDashboard();
 
 onMounted(() => {
-  loadDashboard()
-})
+  loadDashboard();
+});
 </script>
 
 <template>
@@ -23,14 +23,14 @@ onMounted(() => {
         <div
           class="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-lg font-semibold text-white"
         >
-          {{ data?.adjuster.initial ?? 'A' }}
+          {{ data?.adjuster.initial ?? "A" }}
         </div>
         <div>
           <h1 class="text-xl font-semibold tracking-tight sm:text-2xl">
-            Hello, {{ data?.adjuster.name ?? 'Adjuster' }}
+            Hello, {{ data?.adjuster.name ?? "Adjuster" }}
           </h1>
           <p class="text-sm text-muted-foreground">
-            {{ data?.adjuster.division ?? '' }}
+            {{ data?.adjuster.division ?? "" }}
           </p>
         </div>
       </div>
@@ -57,15 +57,11 @@ onMounted(() => {
       v-else-if="error"
       class="rounded-lg border border-destructive/50 bg-destructive/10 p-6 text-center"
     >
-      <p class="text-sm font-medium text-destructive">
-        Failed to load dashboard.
-      </p>
+      <p class="text-sm font-medium text-destructive">Failed to load dashboard.</p>
       <p class="mt-1 text-xs text-muted-foreground">
         {{ error.message }}
       </p>
-      <Button variant="outline" class="mt-4" @click="loadDashboard">
-        Retry
-      </Button>
+      <Button variant="outline" class="mt-4" @click="loadDashboard"> Retry </Button>
     </div>
 
     <!-- Dashboard content -->
